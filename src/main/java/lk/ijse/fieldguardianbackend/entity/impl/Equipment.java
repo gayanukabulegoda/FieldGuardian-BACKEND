@@ -22,11 +22,10 @@ public class Equipment implements SuperEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EquipmentStatus status;
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "assigned_staff_id", referencedColumnName = "id")
     private Staff assignedStaff;
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "assigned_field_id", referencedColumnName = "code")
     private Field assignedField;
 }
-

@@ -16,7 +16,7 @@ public class IdCounter implements SuperEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false, length = 10, unique = true)
-    private String prefix; // e.g., "FLD" for Field, "CRP" for Crop
+    private String prefix;
     @Column(name = "last_count", nullable = false, length = 10)
     private int lastCount;
 }

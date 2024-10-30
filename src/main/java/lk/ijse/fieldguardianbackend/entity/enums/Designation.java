@@ -1,5 +1,6 @@
 package lk.ijse.fieldguardianbackend.entity.enums;
 
+import lk.ijse.fieldguardianbackend.exception.IllegalDesignationException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -19,4 +20,9 @@ public enum Designation {
     SUPERVISORS("OTHER"),
     LABORS("OTHER");
     private final String role;
+
+    public static Designation fromString(String designation) {
+        for (Designation d : Designation.values()) if (d.name().equalsIgnoreCase(designation)) return d;
+        throw new IllegalDesignationException("Invalid designation: " + designation);
+    }
 }

@@ -19,7 +19,7 @@ public class Crop implements SuperEntity {
     private String code;
     @Column(name = "crop_name", nullable = false, length = 50)
     private String commonName;
-    @Column(name = "scientific_name", nullable = false, length = 50)
+    @Column(name = "scientific_name", nullable = false, unique = true, length = 50)
     private String scientificName;
     @Column(name = "crop_image", columnDefinition = "LONGTEXT")
     private String cropImage;

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lk.ijse.fieldguardianbackend.entity.SuperEntity;
 import lk.ijse.fieldguardianbackend.entity.enums.Designation;
 import lk.ijse.fieldguardianbackend.entity.enums.Gender;
+import lk.ijse.fieldguardianbackend.entity.enums.StaffStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,15 +45,13 @@ public class Staff implements SuperEntity {
     private String email;
     @Column(nullable = false, length = 15)
     private String role;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private StaffStatus status;
     @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Vehicle> vehicles = new ArrayList<>();
     @ManyToMany(mappedBy = "staff")
     private List<Field> fields = new ArrayList<>();
     @ManyToMany(mappedBy = "staff")
     private List<MonitoringLog> monitoringLogs = new ArrayList<>();
-
-    public String getRole() {
-        return designation.getRole();
-    }
 }
-

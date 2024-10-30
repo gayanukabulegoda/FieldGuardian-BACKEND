@@ -1,5 +1,6 @@
 package lk.ijse.fieldguardianbackend.dto.impl;
 
+import lk.ijse.fieldguardianbackend.customObj.StaffResponse;
 import lk.ijse.fieldguardianbackend.dto.SuperDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class StaffDTO implements SuperDTO {
+public class StaffDTO implements SuperDTO, StaffResponse {
     private String id;
     private String firstName;
     private String lastName;

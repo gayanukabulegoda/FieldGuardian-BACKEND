@@ -30,6 +30,8 @@ public class Field implements SuperEntity {
     private String fieldImage2;
     @OneToMany(mappedBy = "field", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Crop> crops = new ArrayList<>();
+    @OneToMany(mappedBy = "assignedField", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Equipment> equipments = new ArrayList<>();
     @ManyToMany(mappedBy = "fields")
     private List<MonitoringLog> monitoringLogs = new ArrayList<>();
     @ManyToMany(fetch = FetchType.EAGER)
