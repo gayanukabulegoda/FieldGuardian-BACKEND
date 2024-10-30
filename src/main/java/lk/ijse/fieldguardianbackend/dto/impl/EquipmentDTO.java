@@ -1,5 +1,6 @@
 package lk.ijse.fieldguardianbackend.dto.impl;
 
+import lk.ijse.fieldguardianbackend.customObj.EquipmentResponse;
 import lk.ijse.fieldguardianbackend.dto.SuperDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class EquipmentDTO implements SuperDTO {
+public class EquipmentDTO implements SuperDTO, EquipmentResponse {
     private String id;
     private String name;
     private String type;

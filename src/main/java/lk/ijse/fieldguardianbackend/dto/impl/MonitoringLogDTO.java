@@ -1,5 +1,6 @@
 package lk.ijse.fieldguardianbackend.dto.impl;
 
+import lk.ijse.fieldguardianbackend.customObj.MonitoringLogResponse;
 import lk.ijse.fieldguardianbackend.dto.SuperDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class MonitoringLogDTO implements SuperDTO {
+public class MonitoringLogDTO implements SuperDTO, MonitoringLogResponse {
     private String code;
     private Date date;
     private String details;
