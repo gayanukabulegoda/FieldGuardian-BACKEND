@@ -28,10 +28,8 @@ public class Crop implements SuperEntity {
     @Column(nullable = false, length = 10)
     private String season;
     @ManyToOne
-    @JoinColumn(name = "field_id", nullable = false, referencedColumnName = "code")
+    @JoinColumn(name = "field_id", referencedColumnName = "code")
     private Field field;
     @ManyToMany(mappedBy = "crops")
     private List<MonitoringLog> monitoringLogs = new ArrayList<>();
 }
-
-

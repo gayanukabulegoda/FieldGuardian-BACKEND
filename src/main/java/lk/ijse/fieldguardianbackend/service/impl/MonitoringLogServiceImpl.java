@@ -1,17 +1,18 @@
 package lk.ijse.fieldguardianbackend.service.impl;
 
 import lk.ijse.fieldguardianbackend.customObj.MonitoringLogResponse;
-import lk.ijse.fieldguardianbackend.customObj.impl.MonitoringLogErrorResponse;
 import lk.ijse.fieldguardianbackend.dto.impl.MonitoringLogDTO;
 import lk.ijse.fieldguardianbackend.entity.enums.IdPrefix;
 import lk.ijse.fieldguardianbackend.entity.impl.MonitoringLog;
 import lk.ijse.fieldguardianbackend.exception.DataPersistFailedException;
+import lk.ijse.fieldguardianbackend.exception.FileConversionException;
 import lk.ijse.fieldguardianbackend.exception.MonitoringLogNotFoundException;
 import lk.ijse.fieldguardianbackend.repository.CropRepository;
 import lk.ijse.fieldguardianbackend.repository.FieldRepository;
 import lk.ijse.fieldguardianbackend.repository.MonitoringLogRepository;
 import lk.ijse.fieldguardianbackend.repository.StaffRepository;
 import lk.ijse.fieldguardianbackend.service.MonitoringLogService;
+import lk.ijse.fieldguardianbackend.util.DataConversionUtil;
 import lk.ijse.fieldguardianbackend.util.CustomIdGenerator;
 import lk.ijse.fieldguardianbackend.util.Mapping;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +39,10 @@ public class MonitoringLogServiceImpl implements MonitoringLogService {
         monitoringLog.setStaff(staffRepository.findAllById(monitoringLogDTO.getStaffIds()));
         monitoringLog.setCrops(cropRepository.findAllById(monitoringLogDTO.getCropCodes()));
         try {
+            monitoringLog.setObservedImage(DataConversionUtil.toBase64(monitoringLogDTO.getObservedImage()));
             monitoringLogRepository.save(monitoringLog);
+        } catch (FileConversionException e) {
+            throw new FileConversionException("Cannot convert image to base64", e);
         } catch (Exception e) {
             throw new DataPersistFailedException("Cannot Save Monitoring Log", e);
         }
@@ -52,7 +55,11 @@ public class MonitoringLogServiceImpl implements MonitoringLogService {
                 .orElseThrow(() -> new MonitoringLogNotFoundException("Monitoring log not found"));
         monitoringLog.setDate(monitoringLogDTO.getDate());
         monitoringLog.setDetails(monitoringLogDTO.getDetails());
-        monitoringLog.setObservedImage(monitoringLogDTO.getObservedImage());
+        try {
+            monitoringLog.setObservedImage(DataConversionUtil.toBase64(monitoringLogDTO.getObservedImage()));
+        } catch (FileConversionException e) {
+            throw new FileConversionException("Cannot convert image to base64", e);
+        }
         monitoringLog.setFields(fieldRepository.findAllById(monitoringLogDTO.getFieldCodes()));
         monitoringLog.setStaff(staffRepository.findAllById(monitoringLogDTO.getStaffIds()));
         monitoringLog.setCrops(cropRepository.findAllById(monitoringLogDTO.getCropCodes()));
@@ -60,22 +67,22 @@ public class MonitoringLogServiceImpl implements MonitoringLogService {
 
     @Override
     public void deleteMonitoringLog(String id) {
-        if (!monitoringLogRepository.existsById(id)) {
+        if (!monitoringLogRepository.existsById(id))
             throw new MonitoringLogNotFoundException("Monitoring log not found");
-        }
         monitoringLogRepository.deleteById(id);
     }
 
     @Override
     public MonitoringLogResponse getSelectedMonitoringLog(String id) {
-        Optional<MonitoringLog> byId = monitoringLogRepository.findById(id);
-        return (byId.isPresent())
-                ? mapping.convertToDTO(byId.get(), MonitoringLogDTO.class)
-                : new MonitoringLogErrorResponse(0, "Monitoring log not found");
+        MonitoringLog monitoringLog = monitoringLogRepository.findById(id)
+                .orElseThrow(() -> new MonitoringLogNotFoundException("Monitoring log not found"));
+        return mapping.convertToDTO(monitoringLog, MonitoringLogDTO.class);
     }
 
     @Override
     public List<MonitoringLogDTO> getAllMonitoringLogs() {
-        return mapping.convertToDTOList(monitoringLogRepository.findAll(), MonitoringLogDTO.class);
+        List<MonitoringLog> monitoringLogs = monitoringLogRepository.findAll();
+        if (monitoringLogs.isEmpty()) throw new MonitoringLogNotFoundException("No monitoring logs found");
+        return mapping.convertToDTOList(monitoringLogs, MonitoringLogDTO.class);
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Base64;
 
-public class ConversionUtil {
+public class DataConversionUtil {
     public static String toBase64(MultipartFile file) {
         try {
             byte[] fileByteCollection = file.getBytes();
@@ -16,7 +16,7 @@ public class ConversionUtil {
         }
     }
 
-    public static Point fromString(String pointString) {
+    public static Point toPoint(String pointString) {
         if (pointString == null || pointString.isEmpty())
             throw new FileConversionException("Point string cannot be null or empty");
         String[] parts = pointString.split(",");

@@ -5,6 +5,7 @@ import lk.ijse.fieldguardianbackend.dto.SuperDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
@@ -16,7 +17,7 @@ public class MonitoringLogDTO implements SuperDTO, MonitoringLogResponse {
     private String code;
     private Date date;
     private String details;
-    private String observedImage;
+    private MultipartFile observedImage;
     private List<String> fieldCodes;
     private List<String> staffIds;
     private List<String> cropCodes;

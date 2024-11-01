@@ -5,7 +5,7 @@ import lk.ijse.fieldguardianbackend.dto.SuperDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.geo.Point;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -15,10 +15,10 @@ import java.util.List;
 public class FieldDTO implements SuperDTO, FieldResponse {
     private String code;
     private String name;
-    private Point location;
+    private String location;
     private Double extentSize;
-    private String fieldImage1;
-    private String fieldImage2;
+    private MultipartFile fieldImage1;
+    private MultipartFile fieldImage2;
     private List<String> cropCodes;
     private List<String> equipmentIds;
     private List<String> monitoringLogIds;

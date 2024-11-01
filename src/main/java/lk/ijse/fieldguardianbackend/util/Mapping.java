@@ -1,5 +1,6 @@
 package lk.ijse.fieldguardianbackend.util;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -11,6 +12,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class Mapping {
     private final ModelMapper modelMapper;
+
+    @PostConstruct
+    public void init() {
+        modelMapper.addConverter(ModelMapperConverter.multipartFileToBase64Converter());
+        modelMapper.addConverter(ModelMapperConverter.stringToPointConverter());
+    }
 
     public <T> T convertToDTO(Object entity, Class<T> dtoClass) {
         if (dtoClass == null) return null;

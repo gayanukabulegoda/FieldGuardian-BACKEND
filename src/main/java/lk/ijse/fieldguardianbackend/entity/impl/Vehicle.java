@@ -26,7 +26,7 @@ public class Vehicle {
     @Column(nullable = false, length = 150)
     private String remark;
     @ManyToOne
-    @JoinColumn(name = "driver_id", nullable = false, referencedColumnName = "id")
+    @JoinColumn(name = "driver_id", referencedColumnName = "id")
     private Staff driver;
 }
 

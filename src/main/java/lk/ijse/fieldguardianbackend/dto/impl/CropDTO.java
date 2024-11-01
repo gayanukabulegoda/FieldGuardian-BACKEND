@@ -5,6 +5,7 @@ import lk.ijse.fieldguardianbackend.dto.SuperDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class CropDTO implements SuperDTO, CropResponse {
     private String code;
     private String commonName;
     private String scientificName;
-    private String cropImage;
+    private MultipartFile cropImage;
     private String category;
     private String season;
     private String fieldCode;

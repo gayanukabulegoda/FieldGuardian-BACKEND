@@ -1,7 +1,6 @@
 package lk.ijse.fieldguardianbackend.service.impl;
 
 import lk.ijse.fieldguardianbackend.customObj.VehicleResponse;
-import lk.ijse.fieldguardianbackend.customObj.impl.VehicleErrorResponse;
 import lk.ijse.fieldguardianbackend.dto.impl.VehicleDTO;
 import lk.ijse.fieldguardianbackend.entity.enums.IdPrefix;
 import lk.ijse.fieldguardianbackend.entity.enums.VehicleStatus;
@@ -15,14 +14,15 @@ import lk.ijse.fieldguardianbackend.service.VehicleService;
 import lk.ijse.fieldguardianbackend.util.CustomIdGenerator;
 import lk.ijse.fieldguardianbackend.util.Mapping;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class VehicleServiceImpl implements VehicleService {
     private final VehicleRepository vehicleRepository;
     private final StaffRepository staffRepository;
@@ -37,6 +37,7 @@ public class VehicleServiceImpl implements VehicleService {
         try {
             vehicleRepository.save(vehicle);
         } catch (Exception e) {
+            log.error("Error saving vehicle: {}", e.getMessage(), e);
             throw new DataPersistFailedException("Cannot Save Vehicle", e);
         }
     }
@@ -56,22 +57,22 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public void deleteVehicle(String id) {
-        if (!vehicleRepository.existsById(id)) {
+        if (!vehicleRepository.existsById(id))
             throw new VehicleNotFoundException("Vehicle not found");
-        }
         vehicleRepository.deleteById(id);
     }
 
     @Override
     public VehicleResponse getSelectedVehicle(String id) {
-        Optional<Vehicle> byId = vehicleRepository.findById(id);
-        return (byId.isPresent())
-                ? mapping.convertToDTO(byId.get(), VehicleDTO.class)
-                : new VehicleErrorResponse(0, "Vehicle not found");
+        Vehicle vehicle = vehicleRepository.findById(id)
+                .orElseThrow(() -> new VehicleNotFoundException("Vehicle not found"));
+        return mapping.convertToDTO(vehicle, VehicleDTO.class);
     }
 
     @Override
     public List<VehicleDTO> getAllVehicles() {
-        return mapping.convertToDTOList(vehicleRepository.findAll(), VehicleDTO.class);
+        List<Vehicle> vehicles = vehicleRepository.findAll();
+        if (vehicles.isEmpty()) throw new VehicleNotFoundException("No vehicles found");
+        return mapping.convertToDTOList(vehicles, VehicleDTO.class);
     }
 }

@@ -1,7 +1,6 @@
 package lk.ijse.fieldguardianbackend.service.impl;
 
 import lk.ijse.fieldguardianbackend.customObj.StaffResponse;
-import lk.ijse.fieldguardianbackend.customObj.impl.StaffErrorResponse;
 import lk.ijse.fieldguardianbackend.dto.impl.StaffDTO;
 import lk.ijse.fieldguardianbackend.entity.enums.Designation;
 import lk.ijse.fieldguardianbackend.entity.enums.Gender;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -71,14 +69,15 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public StaffResponse getSelectedStaff(String id) {
-        Optional<Staff> byId = staffRepository.findById(id);
-        return (byId.isPresent())
-                ? mapping.convertToDTO(byId.get(), StaffDTO.class)
-                : new StaffErrorResponse(0, "Staff not found");
+        Staff staff = staffRepository.findActiveStaffById(id)
+                .orElseThrow(() -> new StaffNotFoundException("Staff not found"));
+        return mapping.convertToDTO(staff, StaffDTO.class);
     }
 
     @Override
     public List<StaffDTO> getAllStaffs() {
-        return mapping.convertToDTOList(staffRepository.findAll(), StaffDTO.class);
+        List<Staff> activeStaff = staffRepository.findAllActiveStaff();
+        if (activeStaff.isEmpty()) throw new StaffNotFoundException("No staff found");
+        return mapping.convertToDTOList(activeStaff, StaffDTO.class);
     }
 }

@@ -24,9 +24,9 @@ public class Field implements SuperEntity {
     private Point location;
     @Column(name = "extent_size", nullable = false, length = 10)
     private Double extentSize;
-    @Column(name = "field_image1", columnDefinition = "LONGTEXT")
+    @Column(name = "field_image1", columnDefinition = "LONGTEXT", nullable = false)
     private String fieldImage1;
-    @Column(name = "field_image2", columnDefinition = "LONGTEXT")
+    @Column(name = "field_image2", columnDefinition = "LONGTEXT", nullable = false)
     private String fieldImage2;
     @OneToMany(mappedBy = "field", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Crop> crops = new ArrayList<>();

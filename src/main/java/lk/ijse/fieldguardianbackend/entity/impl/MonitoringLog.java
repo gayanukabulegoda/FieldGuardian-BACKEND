@@ -22,7 +22,7 @@ public class MonitoringLog implements SuperEntity {
     private Date date;
     @Column(nullable = false, length = 150)
     private String details;
-    @Column(name = "observed_image", columnDefinition = "LONGTEXT")
+    @Column(name = "observed_image", columnDefinition = "LONGTEXT", nullable = false)
     private String observedImage;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
