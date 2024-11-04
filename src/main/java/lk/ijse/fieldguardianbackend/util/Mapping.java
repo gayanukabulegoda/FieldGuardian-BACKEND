@@ -1,6 +1,9 @@
 package lk.ijse.fieldguardianbackend.util;
 
 import jakarta.annotation.PostConstruct;
+import lk.ijse.fieldguardianbackend.dto.impl.FieldResponseDTO;
+import lk.ijse.fieldguardianbackend.dto.impl.StaffDTO;
+import lk.ijse.fieldguardianbackend.dto.impl.VehicleDTO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -29,6 +32,10 @@ public class Mapping {
     }
     public <T> List<T> convertToDTOList(Object entityList, Class<T> dtoClass) {
         if (entityList == null) return null;
+        if (dtoClass == VehicleDTO.class)
+            return modelMapper.map(entityList, new TypeToken<List<VehicleDTO>>() {}.getType());
+        if (dtoClass == FieldResponseDTO.class)
+            return modelMapper.map(entityList, new TypeToken<List<FieldResponseDTO>>() {}.getType());
         return modelMapper.map(entityList, new TypeToken<List<T>>() {}.getType());
     }
 }

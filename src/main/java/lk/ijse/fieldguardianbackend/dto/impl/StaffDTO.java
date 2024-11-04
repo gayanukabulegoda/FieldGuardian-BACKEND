@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,7 +24,5 @@ public class StaffDTO implements SuperDTO, StaffResponse {
     private String contactNo;
     private String email;
     private String role;
-    private List<String> vehicleCodes;
-    private List<String> fieldCodes;
-    private List<String> monitoringLogIds;
+//    private List<String> monitoringLogIds;
 }

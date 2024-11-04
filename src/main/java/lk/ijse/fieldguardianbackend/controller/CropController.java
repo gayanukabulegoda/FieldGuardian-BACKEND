@@ -53,19 +53,19 @@ public class CropController {
     @ExceptionHandler(FileConversionException.class)
     public ResponseEntity<CropResponse> handleFileConversionException(FileConversionException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new CropErrorResponse(0, "File Conversion Failed"));
+                .body(new CropErrorResponse(0, e.getMessage()));
     }
 
     @ExceptionHandler(DataPersistFailedException.class)
     public ResponseEntity<CropResponse> handleDataPersistFailedException(DataPersistFailedException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new CropErrorResponse(0, "Data Persist Failed"));
+                .body(new CropErrorResponse(e.getErrorCode(), e.getMessage()));
     }
 
     @ExceptionHandler(CropNotFoundException.class)
     public ResponseEntity<CropResponse> handleCropNotFoundException(CropNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new CropErrorResponse(0, "Crop Not Found"));
+                .body(new CropErrorResponse(0, e.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)

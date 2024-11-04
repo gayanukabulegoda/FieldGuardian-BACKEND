@@ -1,10 +1,13 @@
 package lk.ijse.fieldguardianbackend.controller;
 
 import lk.ijse.fieldguardianbackend.customObj.EquipmentResponse;
+import lk.ijse.fieldguardianbackend.customObj.FieldResponse;
 import lk.ijse.fieldguardianbackend.customObj.impl.EquipmentErrorResponse;
+import lk.ijse.fieldguardianbackend.customObj.impl.FieldErrorResponse;
 import lk.ijse.fieldguardianbackend.dto.impl.EquipmentDTO;
 import lk.ijse.fieldguardianbackend.exception.DataPersistFailedException;
 import lk.ijse.fieldguardianbackend.exception.EquipmentNotFoundException;
+import lk.ijse.fieldguardianbackend.exception.FieldNotFoundException;
 import lk.ijse.fieldguardianbackend.service.EquipmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,6 +36,12 @@ public class EquipmentController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @PatchMapping(value = "/field/{fieldCode}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> updateFieldEquipments(@PathVariable("fieldCode") String fieldCode, @RequestBody List<String> equipmentIds) {
+        equipmentService.updateFieldEquipments(fieldCode, equipmentIds);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteEquipment(@PathVariable("id") String id) {
         equipmentService.deleteEquipment(id);
@@ -49,16 +58,32 @@ public class EquipmentController {
         return ResponseEntity.status(HttpStatus.OK).body(equipmentService.getAllEquipments());
     }
 
+    @GetMapping(value = "/available", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<EquipmentDTO>> getAvailableEquipments() {
+        return ResponseEntity.status(HttpStatus.OK).body(equipmentService.getAvailableEquipments());
+    }
+
+    @GetMapping(value = "/field/{fieldCode}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<EquipmentDTO>> getInUseFieldEquipments(@PathVariable("fieldCode") String fieldCode) {
+        return ResponseEntity.status(HttpStatus.OK).body(equipmentService.getInUseFieldEquipments(fieldCode));
+    }
+
     @ExceptionHandler(DataPersistFailedException.class)
     public ResponseEntity<EquipmentResponse> handleDataPersistFailedException(DataPersistFailedException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new EquipmentErrorResponse(0, "Data Persist Failed"));
+                .body(new EquipmentErrorResponse(e.getErrorCode(), e.getMessage()));
     }
 
     @ExceptionHandler(EquipmentNotFoundException.class)
     public ResponseEntity<EquipmentResponse> handleEquipmentNotFoundException(EquipmentNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new EquipmentErrorResponse(0, "Equipment Not Found"));
+                .body(new EquipmentErrorResponse(0, e.getMessage()));
+    }
+
+    @ExceptionHandler(FieldNotFoundException.class)
+    public ResponseEntity<FieldResponse> handleFieldNotFoundException(FieldNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new FieldErrorResponse(0, e.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)

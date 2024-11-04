@@ -2,6 +2,7 @@ package lk.ijse.fieldguardianbackend.entity.impl;
 
 import jakarta.persistence.*;
 import lk.ijse.fieldguardianbackend.entity.SuperEntity;
+import lk.ijse.fieldguardianbackend.entity.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,11 +29,14 @@ public class Field implements SuperEntity {
     private String fieldImage1;
     @Column(name = "field_image2", columnDefinition = "LONGTEXT", nullable = false)
     private String fieldImage2;
-    @OneToMany(mappedBy = "field", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status;
+    @OneToMany(mappedBy = "field", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Crop> crops = new ArrayList<>();
-    @OneToMany(mappedBy = "assignedField", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "assignedField", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Equipment> equipments = new ArrayList<>();
-    @ManyToMany(mappedBy = "fields")
+    @OneToMany(mappedBy = "field")
     private List<MonitoringLog> monitoringLogs = new ArrayList<>();
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

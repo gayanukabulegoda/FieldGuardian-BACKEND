@@ -10,6 +10,7 @@ import lk.ijse.fieldguardianbackend.exception.StaffNotFoundException;
 import lk.ijse.fieldguardianbackend.exception.VehicleNotFoundException;
 import lk.ijse.fieldguardianbackend.service.VehicleService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import java.util.List;
 @RequestMapping("/api/v1/vehicle")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@Slf4j
 public class VehicleController {
     private final VehicleService vehicleService;
 
@@ -33,6 +35,12 @@ public class VehicleController {
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateVehicle(@PathVariable("id") String id, @RequestBody VehicleDTO vehicleDTO) {
         vehicleService.updateVehicle(id, vehicleDTO);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PatchMapping(value = "/{vehicleId}/driver/{driverId}")
+    public ResponseEntity<Void> updateVehicleDriver(@PathVariable("vehicleId") String vehicleId, @PathVariable("driverId") String driverId) {
+        vehicleService.updateVehicleDriver(vehicleId, driverId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -53,21 +61,21 @@ public class VehicleController {
     }
 
     @ExceptionHandler(DataPersistFailedException.class)
-    public ResponseEntity<VehicleResponse> handleVehicleNotFoundException(DataPersistFailedException e) {
+    public ResponseEntity<VehicleResponse> handleDataPersistFailedException(DataPersistFailedException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new VehicleErrorResponse(0, "Data Persist Failed"));
+                .body(new VehicleErrorResponse(e.getErrorCode(), e.getMessage()));
     }
 
     @ExceptionHandler(VehicleNotFoundException.class)
     public ResponseEntity<VehicleResponse> handleVehicleNotFoundException(VehicleNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new VehicleErrorResponse(0, "Vehicle Not Found"));
+                .body(new VehicleErrorResponse(0, e.getMessage()));
     }
 
     @ExceptionHandler(StaffNotFoundException.class)
     public ResponseEntity<StaffResponse> handleStaffNotFoundException(StaffNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new StaffErrorResponse(0, "Staff Not Found"));
+                .body(new StaffErrorResponse(0, e.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)

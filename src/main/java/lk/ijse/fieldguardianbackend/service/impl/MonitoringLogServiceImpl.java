@@ -35,7 +35,6 @@ public class MonitoringLogServiceImpl implements MonitoringLogService {
     public void saveMonitoringLog(MonitoringLogDTO monitoringLogDTO) {
         monitoringLogDTO.setCode(customIdGenerator.generateId(IdPrefix.MONITORING_LOG.getPrefix()));
         MonitoringLog monitoringLog = mapping.convertToEntity(monitoringLogDTO, MonitoringLog.class);
-        monitoringLog.setFields(fieldRepository.findAllById(monitoringLogDTO.getFieldCodes()));
         monitoringLog.setStaff(staffRepository.findAllById(monitoringLogDTO.getStaffIds()));
         monitoringLog.setCrops(cropRepository.findAllById(monitoringLogDTO.getCropCodes()));
         try {
@@ -44,7 +43,7 @@ public class MonitoringLogServiceImpl implements MonitoringLogService {
         } catch (FileConversionException e) {
             throw new FileConversionException("Cannot convert image to base64", e);
         } catch (Exception e) {
-            throw new DataPersistFailedException("Cannot Save Monitoring Log", e);
+            throw new DataPersistFailedException("Cannot Save Monitoring Log", 0, e);
         }
     }
 
@@ -60,7 +59,6 @@ public class MonitoringLogServiceImpl implements MonitoringLogService {
         } catch (FileConversionException e) {
             throw new FileConversionException("Cannot convert image to base64", e);
         }
-        monitoringLog.setFields(fieldRepository.findAllById(monitoringLogDTO.getFieldCodes()));
         monitoringLog.setStaff(staffRepository.findAllById(monitoringLogDTO.getStaffIds()));
         monitoringLog.setCrops(cropRepository.findAllById(monitoringLogDTO.getCropCodes()));
     }

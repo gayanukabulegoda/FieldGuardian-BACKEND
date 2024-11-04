@@ -41,7 +41,7 @@ public class CropServiceImpl implements CropService {
         } catch (FileConversionException e) {
             throw new FileConversionException("Cannot convert image to base64", e);
         } catch (Exception e) {
-            throw new DataPersistFailedException("Cannot Save Crop", e);
+            throw new DataPersistFailedException("Cannot Save Crop", 0, e);
         }
     }
 

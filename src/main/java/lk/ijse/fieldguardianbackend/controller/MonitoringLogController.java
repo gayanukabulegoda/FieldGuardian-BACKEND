@@ -53,19 +53,19 @@ public class MonitoringLogController {
     @ExceptionHandler(FileConversionException.class)
     public ResponseEntity<MonitoringLogResponse> handleFileConversionException(FileConversionException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new MonitoringLogErrorResponse(0, "File Conversion Failed"));
+                .body(new MonitoringLogErrorResponse(0, e.getMessage()));
     }
 
     @ExceptionHandler(DataPersistFailedException.class)
     public ResponseEntity<MonitoringLogResponse> handleDataPersistFailedException(DataPersistFailedException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new MonitoringLogErrorResponse(0, "Data Persist Failed"));
+                .body(new MonitoringLogErrorResponse(e.getErrorCode(), e.getMessage()));
     }
 
     @ExceptionHandler(MonitoringLogNotFoundException.class)
     public ResponseEntity<MonitoringLogResponse> handleMonitoringLogNotFoundException(MonitoringLogNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new MonitoringLogErrorResponse(0, "Monitoring Log Not Found"));
+                .body(new MonitoringLogErrorResponse(0, e.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)

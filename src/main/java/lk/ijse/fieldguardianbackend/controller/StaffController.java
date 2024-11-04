@@ -1,10 +1,18 @@
 package lk.ijse.fieldguardianbackend.controller;
 
+import lk.ijse.fieldguardianbackend.customObj.FieldResponse;
 import lk.ijse.fieldguardianbackend.customObj.StaffResponse;
+import lk.ijse.fieldguardianbackend.customObj.VehicleResponse;
+import lk.ijse.fieldguardianbackend.customObj.impl.FieldErrorResponse;
 import lk.ijse.fieldguardianbackend.customObj.impl.StaffErrorResponse;
+import lk.ijse.fieldguardianbackend.customObj.impl.VehicleErrorResponse;
 import lk.ijse.fieldguardianbackend.dto.impl.StaffDTO;
+import lk.ijse.fieldguardianbackend.dto.impl.StaffFieldDTO;
+import lk.ijse.fieldguardianbackend.dto.impl.VehicleDTO;
 import lk.ijse.fieldguardianbackend.exception.DataPersistFailedException;
+import lk.ijse.fieldguardianbackend.exception.FieldNotFoundException;
 import lk.ijse.fieldguardianbackend.exception.StaffNotFoundException;
+import lk.ijse.fieldguardianbackend.exception.VehicleNotFoundException;
 import lk.ijse.fieldguardianbackend.service.StaffService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -49,16 +57,38 @@ public class StaffController {
         return ResponseEntity.status(HttpStatus.OK).body(staffService.getAllStaffs());
     }
 
+    @GetMapping(value = "/{id}/vehicles", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<VehicleDTO>> getStaffVehicles(@PathVariable("id") String id) {
+        return ResponseEntity.status(HttpStatus.OK).body(staffService.getStaffVehicles(id));
+    }
+
+    @GetMapping(value = "/{id}/fields", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<StaffFieldDTO>> getStaffFields(@PathVariable("id") String id) {
+        return ResponseEntity.status(HttpStatus.OK).body(staffService.getStaffFields(id));
+    }
+
     @ExceptionHandler(DataPersistFailedException.class)
     public ResponseEntity<StaffResponse> handleDataPersistFailedException(DataPersistFailedException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new StaffErrorResponse(0, "Data Persist Failed"));
+                .body(new StaffErrorResponse(e.getErrorCode(), e.getMessage()));
     }
 
     @ExceptionHandler(StaffNotFoundException.class)
     public ResponseEntity<StaffResponse> handleStaffNotFoundException(StaffNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new StaffErrorResponse(0, "Staff Not Found"));
+                .body(new StaffErrorResponse(0, e.getMessage()));
+    }
+
+    @ExceptionHandler(VehicleNotFoundException.class)
+    public ResponseEntity<VehicleResponse> handleVehicleNotFoundException(VehicleNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new VehicleErrorResponse(0, e.getMessage()));
+    }
+
+    @ExceptionHandler(FieldNotFoundException.class)
+    public ResponseEntity<FieldResponse> handleFieldNotFoundException(FieldNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new FieldErrorResponse(0, e.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)
