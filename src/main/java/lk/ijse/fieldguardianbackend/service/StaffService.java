@@ -17,4 +17,5 @@ public interface StaffService {
     List<StaffDTO> getAllStaffs();
     List<VehicleDTO> getStaffVehicles(String staffId);
     List<StaffFieldDTO> getStaffFields(String staffId);
+    List<StaffDTO> getStaffWithoutEquipment();
 }

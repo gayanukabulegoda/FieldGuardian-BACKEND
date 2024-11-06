@@ -1,6 +1,5 @@
 package lk.ijse.fieldguardianbackend.entity.impl;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lk.ijse.fieldguardianbackend.entity.SuperEntity;
 import lombok.AllArgsConstructor;

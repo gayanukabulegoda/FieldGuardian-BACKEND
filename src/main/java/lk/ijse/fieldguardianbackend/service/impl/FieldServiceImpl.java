@@ -1,10 +1,7 @@
 package lk.ijse.fieldguardianbackend.service.impl;
 
 import lk.ijse.fieldguardianbackend.customObj.FieldResponse;
-import lk.ijse.fieldguardianbackend.dto.impl.CropDTO;
-import lk.ijse.fieldguardianbackend.dto.impl.FieldResponseDTO;
-import lk.ijse.fieldguardianbackend.dto.impl.FieldSaveDTO;
-import lk.ijse.fieldguardianbackend.dto.impl.StaffDTO;
+import lk.ijse.fieldguardianbackend.dto.impl.*;
 import lk.ijse.fieldguardianbackend.entity.enums.IdPrefix;
 import lk.ijse.fieldguardianbackend.entity.enums.Status;
 import lk.ijse.fieldguardianbackend.entity.impl.Crop;
@@ -68,7 +65,7 @@ public class FieldServiceImpl implements FieldService {
     @Override
     @Transactional
     public void updateFieldStaff(String fieldId, List<String> staffIds) {
-        Field field = fieldRepository.findById(fieldId)
+        Field field = fieldRepository.findByIdAndStatusNot(fieldId, Status.REMOVED)
                 .orElseThrow(() -> new FieldNotFoundException("Field not found"));
         List<Staff> staffList = staffRepository.findAllById(staffIds);
         field.setStaff(staffList);
@@ -77,7 +74,7 @@ public class FieldServiceImpl implements FieldService {
     @Override
     @Transactional
     public void deleteField(String id) {
-        Field field = fieldRepository.findById(id)
+        Field field = fieldRepository.findByIdAndStatusNot(id, Status.REMOVED)
                 .orElseThrow(() -> new FieldNotFoundException("Field not found"));
         field.setStatus(Status.REMOVED);
     }
@@ -98,7 +95,7 @@ public class FieldServiceImpl implements FieldService {
 
     @Override
     public List<StaffDTO> getFieldStaff(String fieldId) {
-        Field field = fieldRepository.findById(fieldId)
+        Field field = fieldRepository.findByIdAndStatusNot(fieldId, Status.REMOVED)
                 .orElseThrow(() -> new FieldNotFoundException("Field not found"));
         List<Staff> staffList = field.getStaff();
         if (staffList.isEmpty())
@@ -109,9 +106,11 @@ public class FieldServiceImpl implements FieldService {
     }
 
     @Override
-    public List<CropDTO> getFieldCrops(String fieldId) {
+    public List<CropResponseDTO> getFieldCrops(String fieldId) {
+        if (!fieldRepository.existsByIdAndStatus(fieldId, Status.ACTIVE))
+            throw new FieldNotFoundException("Field not found");
         List<Crop> crops = fieldRepository.findCropsByFieldId(fieldId, Status.REMOVED);
         if (crops.isEmpty()) throw new CropNotFoundException("No crops found for the field");
-        return mapping.convertToDTOList(crops, CropDTO.class);
+        return mapping.convertToDTOList(crops, CropResponseDTO.class);
     }
 }

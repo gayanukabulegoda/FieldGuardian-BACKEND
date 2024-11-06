@@ -54,7 +54,7 @@ public class StaffServiceImpl implements StaffService {
     @Override
     @Transactional
     public void updateStaff(String id, StaffDTO staffDTO) {
-        Staff staff = staffRepository.findById(id)
+        Staff staff = staffRepository.findActiveStaffById(id, Status.ACTIVE)
                 .orElseThrow(() -> new StaffNotFoundException("Staff not found"));
         if (!staff.getContactNo().equals(staffDTO.getContactNo()) && staffRepository.existsByContactNo(staffDTO.getContactNo()))
             throw new DataPersistFailedException("Contact number already exists", 1);
@@ -76,21 +76,21 @@ public class StaffServiceImpl implements StaffService {
     @Override
     @Transactional
     public void deleteStaff(String id) {
-        Staff staff = staffRepository.findById(id)
+        Staff staff = staffRepository.findActiveStaffById(id, Status.ACTIVE)
                 .orElseThrow(() -> new StaffNotFoundException("Staff not found"));
         staff.setStatus(Status.REMOVED);
     }
 
     @Override
     public StaffResponse getSelectedStaff(String id) {
-        Staff staff = staffRepository.findActiveStaffById(id)
+        Staff staff = staffRepository.findActiveStaffById(id, Status.ACTIVE)
                 .orElseThrow(() -> new StaffNotFoundException("Staff not found"));
         return mapping.convertToDTO(staff, StaffDTO.class);
     }
 
     @Override
     public List<StaffDTO> getAllStaffs() {
-        List<Staff> activeStaff = staffRepository.findAllActiveStaff();
+        List<Staff> activeStaff = staffRepository.findAllActiveStaff(Status.ACTIVE);
         if (activeStaff.isEmpty()) throw new StaffNotFoundException("No staff found");
         return mapping.convertToDTOList(activeStaff, StaffDTO.class);
     }
@@ -107,5 +107,12 @@ public class StaffServiceImpl implements StaffService {
         List<Field> fields = staffRepository.findFieldsByStaffId(staffId);
         if (fields.isEmpty()) throw new FieldNotFoundException("No fields found for staff");
         return mapping.convertToDTOList(fields, StaffFieldDTO.class);
+    }
+
+    @Override
+    public List<StaffDTO> getStaffWithoutEquipment() {
+        List<Staff> staffList = staffRepository.findAllActiveStaffWithoutEquipment(Status.ACTIVE);
+        if (staffList.isEmpty()) throw new StaffNotFoundException("No staff found without equipment");
+        return mapping.convertToDTOList(staffList, StaffDTO.class);
     }
 }

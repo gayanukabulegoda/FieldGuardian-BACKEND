@@ -1,10 +1,7 @@
 package lk.ijse.fieldguardianbackend.service;
 
 import lk.ijse.fieldguardianbackend.customObj.FieldResponse;
-import lk.ijse.fieldguardianbackend.dto.impl.CropDTO;
-import lk.ijse.fieldguardianbackend.dto.impl.FieldResponseDTO;
-import lk.ijse.fieldguardianbackend.dto.impl.FieldSaveDTO;
-import lk.ijse.fieldguardianbackend.dto.impl.StaffDTO;
+import lk.ijse.fieldguardianbackend.dto.impl.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,5 +15,5 @@ public interface FieldService {
     List<FieldResponseDTO> getAllFields();
     List<StaffDTO> getFieldStaff(String fieldId);
     void updateFieldStaff(String fieldId, List<String> staffIds);
-    List<CropDTO> getFieldCrops(String fieldId);
+    List<CropResponseDTO> getFieldCrops(String fieldId);
 }

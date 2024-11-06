@@ -1,6 +1,6 @@
 package lk.ijse.fieldguardianbackend.dto.impl;
 
-import lk.ijse.fieldguardianbackend.customObj.FieldResponse;
+import lk.ijse.fieldguardianbackend.customObj.CropResponse;
 import lk.ijse.fieldguardianbackend.dto.SuperDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,11 +10,12 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class FieldSaveDTO implements SuperDTO, FieldResponse {
+public class CropSaveDTO implements SuperDTO, CropResponse {
     private String code;
-    private String name;
-    private String location;
-    private Double extentSize;
-    private MultipartFile fieldImage1;
-    private MultipartFile fieldImage2;
+    private String commonName;
+    private String scientificName;
+    private MultipartFile cropImage;
+    private String category;
+    private String season;
+    private String fieldCode;
 }

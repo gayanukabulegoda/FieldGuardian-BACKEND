@@ -18,4 +18,6 @@ public interface FieldRepository extends JpaRepository<Field, String> {
     List<Field> findAllByStatusNot(Status status);
     @Query("SELECT f.crops FROM Field f WHERE f.code = :fieldId AND f.status <> :status")
     List<Crop> findCropsByFieldId(String fieldId, Status status);
+    @Query("SELECT CASE WHEN COUNT(f) > 0 THEN true ELSE false END FROM Field f WHERE f.code = :id AND f.status = :status")
+    boolean existsByIdAndStatus(String id, Status status);
 }

@@ -67,6 +67,12 @@ public class StaffController {
         return ResponseEntity.status(HttpStatus.OK).body(staffService.getStaffFields(id));
     }
 
+    @GetMapping(value = "/without-equipment", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<StaffDTO>> getStaffWithoutEquipment() {
+        List<StaffDTO> staffList = staffService.getStaffWithoutEquipment();
+        return ResponseEntity.status(HttpStatus.OK).body(staffList);
+    }
+
     @ExceptionHandler(DataPersistFailedException.class)
     public ResponseEntity<StaffResponse> handleDataPersistFailedException(DataPersistFailedException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

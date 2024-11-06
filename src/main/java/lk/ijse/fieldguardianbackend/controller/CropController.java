@@ -1,10 +1,14 @@
 package lk.ijse.fieldguardianbackend.controller;
 
 import lk.ijse.fieldguardianbackend.customObj.CropResponse;
+import lk.ijse.fieldguardianbackend.customObj.FieldResponse;
 import lk.ijse.fieldguardianbackend.customObj.impl.CropErrorResponse;
-import lk.ijse.fieldguardianbackend.dto.impl.CropDTO;
+import lk.ijse.fieldguardianbackend.customObj.impl.FieldErrorResponse;
+import lk.ijse.fieldguardianbackend.dto.impl.CropResponseDTO;
+import lk.ijse.fieldguardianbackend.dto.impl.CropSaveDTO;
 import lk.ijse.fieldguardianbackend.exception.CropNotFoundException;
 import lk.ijse.fieldguardianbackend.exception.DataPersistFailedException;
+import lk.ijse.fieldguardianbackend.exception.FieldNotFoundException;
 import lk.ijse.fieldguardianbackend.exception.FileConversionException;
 import lk.ijse.fieldguardianbackend.service.CropService;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +27,14 @@ public class CropController {
     private final CropService cropService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> saveCrop(@ModelAttribute CropDTO cropDTO) {
-        cropService.saveCrop(cropDTO);
+    public ResponseEntity<Void> saveCrop(@ModelAttribute CropSaveDTO cropSaveDTO) {
+        cropService.saveCrop(cropSaveDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> updateCrop(@PathVariable("id") String id, @ModelAttribute CropDTO cropDTO) {
-        cropService.updateCrop(id, cropDTO);
+    public ResponseEntity<Void> updateCrop(@PathVariable("id") String id, @ModelAttribute CropSaveDTO cropSaveDTO) {
+        cropService.updateCrop(id, cropSaveDTO);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -46,7 +50,7 @@ public class CropController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<CropDTO>> getAllCrops() {
+    public ResponseEntity<List<CropResponseDTO>> getAllCrops() {
         return ResponseEntity.status(HttpStatus.OK).body(cropService.getAllCrops());
     }
 
@@ -66,6 +70,12 @@ public class CropController {
     public ResponseEntity<CropResponse> handleCropNotFoundException(CropNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new CropErrorResponse(0, e.getMessage()));
+    }
+
+    @ExceptionHandler(FieldNotFoundException.class)
+    public ResponseEntity<FieldResponse> handleFieldNotFoundException(FieldNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new FieldErrorResponse(0, e.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)

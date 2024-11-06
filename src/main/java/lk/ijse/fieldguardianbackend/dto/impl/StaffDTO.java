@@ -24,5 +24,4 @@ public class StaffDTO implements SuperDTO, StaffResponse {
     private String contactNo;
     private String email;
     private String role;
-//    private List<String> monitoringLogIds;
 }

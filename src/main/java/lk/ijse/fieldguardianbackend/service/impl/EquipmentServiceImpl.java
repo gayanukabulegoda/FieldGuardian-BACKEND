@@ -2,15 +2,20 @@ package lk.ijse.fieldguardianbackend.service.impl;
 
 import lk.ijse.fieldguardianbackend.customObj.EquipmentResponse;
 import lk.ijse.fieldguardianbackend.dto.impl.EquipmentDTO;
+import lk.ijse.fieldguardianbackend.dto.impl.UpdateEquipmentStaffDTO;
 import lk.ijse.fieldguardianbackend.entity.enums.EquipmentStatus;
 import lk.ijse.fieldguardianbackend.entity.enums.IdPrefix;
+import lk.ijse.fieldguardianbackend.entity.enums.Status;
 import lk.ijse.fieldguardianbackend.entity.impl.Equipment;
 import lk.ijse.fieldguardianbackend.entity.impl.Field;
+import lk.ijse.fieldguardianbackend.entity.impl.Staff;
 import lk.ijse.fieldguardianbackend.exception.DataPersistFailedException;
 import lk.ijse.fieldguardianbackend.exception.EquipmentNotFoundException;
 import lk.ijse.fieldguardianbackend.exception.FieldNotFoundException;
+import lk.ijse.fieldguardianbackend.exception.StaffNotFoundException;
 import lk.ijse.fieldguardianbackend.repository.EquipmentRepository;
 import lk.ijse.fieldguardianbackend.repository.FieldRepository;
+import lk.ijse.fieldguardianbackend.repository.StaffRepository;
 import lk.ijse.fieldguardianbackend.service.EquipmentService;
 import lk.ijse.fieldguardianbackend.util.CustomIdGenerator;
 import lk.ijse.fieldguardianbackend.util.Mapping;
@@ -25,6 +30,7 @@ import java.util.List;
 public class EquipmentServiceImpl implements EquipmentService {
     private final EquipmentRepository equipmentRepository;
     private final FieldRepository fieldRepository;
+    private final StaffRepository staffRepository;
     private final Mapping mapping;
     private final CustomIdGenerator customIdGenerator;
 
@@ -52,9 +58,9 @@ public class EquipmentServiceImpl implements EquipmentService {
     @Override
     @Transactional
     public void updateFieldEquipments(String fieldCode, List<String> equipmentIds) {
-        Field field = fieldRepository.findById(fieldCode)
+        Field field = fieldRepository.findByIdAndStatusNot(fieldCode, Status.REMOVED)
                 .orElseThrow(() -> new FieldNotFoundException("Field not found"));
-        List<Equipment> equipments = equipmentRepository.findAllById(equipmentIds);
+        List<Equipment> equipments = equipmentRepository.findAllByStatusNot(EquipmentStatus.OUT_OF_SERVICE);
         if (equipments.isEmpty())
             throw new EquipmentNotFoundException("No equipment found for the provided IDs");
         for (Equipment equipment : equipments) {
@@ -64,17 +70,31 @@ public class EquipmentServiceImpl implements EquipmentService {
     }
 
     @Override
+    @Transactional
+    public void updateEquipmentStaff(UpdateEquipmentStaffDTO updateEquipmentStaffDTO) {
+        Equipment equipment = equipmentRepository
+                .findByIdAndStatusNot(updateEquipmentStaffDTO.getEquipmentId(), EquipmentStatus.OUT_OF_SERVICE)
+                .orElseThrow(() -> new EquipmentNotFoundException("Equipment not found"));
+        Staff staff = staffRepository.findActiveStaffById(updateEquipmentStaffDTO.getStaffId(), Status.ACTIVE)
+                .orElseThrow(() -> new StaffNotFoundException("Staff not found"));
+        if (equipment.getAssignedStaff() != null && !equipment.getAssignedStaff().getId().equals(staff.getId()))
+            throw new DataPersistFailedException("Equipment already assigned to another staff", 1);
+        equipment.setAssignedStaff(staff);
+    }
+
+    @Override
+    @Transactional
     public void deleteEquipment(String id) {
-        if (!equipmentRepository.existsById(id))
-            throw new EquipmentNotFoundException("Equipment not found");
-        equipmentRepository.deleteById(id);
+        Equipment equipment = equipmentRepository.findById(id)
+                .orElseThrow(() -> new EquipmentNotFoundException("Equipment not found"));
+        equipment.setStatus(EquipmentStatus.OUT_OF_SERVICE);
     }
 
     @Override
     public EquipmentResponse getEquipmentById(String id) {
         Equipment equipment = equipmentRepository.findByIdAndStatusNot(id, EquipmentStatus.OUT_OF_SERVICE)
                 .orElseThrow(() -> new EquipmentNotFoundException("Equipment not found"));
-        return mapping.convertToDTO(equipment, EquipmentResponse.class);
+        return mapping.convertToDTO(equipment, EquipmentDTO.class);
     }
 
     @Override

@@ -1,12 +1,12 @@
 package lk.ijse.fieldguardianbackend.service.impl;
 
 import lk.ijse.fieldguardianbackend.customObj.MonitoringLogResponse;
-import lk.ijse.fieldguardianbackend.dto.impl.MonitoringLogDTO;
+import lk.ijse.fieldguardianbackend.dto.impl.*;
 import lk.ijse.fieldguardianbackend.entity.enums.IdPrefix;
+import lk.ijse.fieldguardianbackend.entity.impl.Crop;
 import lk.ijse.fieldguardianbackend.entity.impl.MonitoringLog;
-import lk.ijse.fieldguardianbackend.exception.DataPersistFailedException;
-import lk.ijse.fieldguardianbackend.exception.FileConversionException;
-import lk.ijse.fieldguardianbackend.exception.MonitoringLogNotFoundException;
+import lk.ijse.fieldguardianbackend.entity.impl.Staff;
+import lk.ijse.fieldguardianbackend.exception.*;
 import lk.ijse.fieldguardianbackend.repository.CropRepository;
 import lk.ijse.fieldguardianbackend.repository.FieldRepository;
 import lk.ijse.fieldguardianbackend.repository.MonitoringLogRepository;
@@ -32,13 +32,11 @@ public class MonitoringLogServiceImpl implements MonitoringLogService {
     private final CustomIdGenerator customIdGenerator;
 
     @Override
-    public void saveMonitoringLog(MonitoringLogDTO monitoringLogDTO) {
-        monitoringLogDTO.setCode(customIdGenerator.generateId(IdPrefix.MONITORING_LOG.getPrefix()));
-        MonitoringLog monitoringLog = mapping.convertToEntity(monitoringLogDTO, MonitoringLog.class);
-        monitoringLog.setStaff(staffRepository.findAllById(monitoringLogDTO.getStaffIds()));
-        monitoringLog.setCrops(cropRepository.findAllById(monitoringLogDTO.getCropCodes()));
+    public void saveMonitoringLog(MonitoringLogSaveDTO monitoringLogSaveDTO) {
+        monitoringLogSaveDTO.setCode(customIdGenerator.generateId(IdPrefix.MONITORING_LOG.getPrefix()));;
         try {
-            monitoringLog.setObservedImage(DataConversionUtil.toBase64(monitoringLogDTO.getObservedImage()));
+            MonitoringLog monitoringLog = mapping.convertToEntity(monitoringLogSaveDTO, MonitoringLog.class);
+            monitoringLog.setObservedImage(DataConversionUtil.toBase64(monitoringLogSaveDTO.getObservedImage()));
             monitoringLogRepository.save(monitoringLog);
         } catch (FileConversionException e) {
             throw new FileConversionException("Cannot convert image to base64", e);
@@ -49,38 +47,62 @@ public class MonitoringLogServiceImpl implements MonitoringLogService {
 
     @Override
     @Transactional
-    public void updateMonitoringLog(String id, MonitoringLogDTO monitoringLogDTO) {
+    public void updateMonitoringLog(String id, MonitoringLogSaveDTO monitoringLogSaveDTO) {
         MonitoringLog monitoringLog = monitoringLogRepository.findById(id)
                 .orElseThrow(() -> new MonitoringLogNotFoundException("Monitoring log not found"));
-        monitoringLog.setDate(monitoringLogDTO.getDate());
-        monitoringLog.setDetails(monitoringLogDTO.getDetails());
+        monitoringLog.setDate(monitoringLogSaveDTO.getDate());
+        monitoringLog.setDetails(monitoringLogSaveDTO.getDetails());
+        monitoringLog.setField(fieldRepository.findById(monitoringLogSaveDTO.getFieldCode())
+                .orElseThrow(() -> new FieldNotFoundException("Field not found")));
         try {
-            monitoringLog.setObservedImage(DataConversionUtil.toBase64(monitoringLogDTO.getObservedImage()));
+            monitoringLog.setObservedImage(DataConversionUtil.toBase64(monitoringLogSaveDTO.getObservedImage()));
         } catch (FileConversionException e) {
             throw new FileConversionException("Cannot convert image to base64", e);
         }
-        monitoringLog.setStaff(staffRepository.findAllById(monitoringLogDTO.getStaffIds()));
-        monitoringLog.setCrops(cropRepository.findAllById(monitoringLogDTO.getCropCodes()));
     }
 
     @Override
-    public void deleteMonitoringLog(String id) {
-        if (!monitoringLogRepository.existsById(id))
-            throw new MonitoringLogNotFoundException("Monitoring log not found");
-        monitoringLogRepository.deleteById(id);
+    @Transactional
+    public void updateMonitoringLogStaffAndCrops(UpdateMonitoringLogStaffAndCropsDTO updateDTO) {
+        MonitoringLog monitoringLog = monitoringLogRepository.findById(updateDTO.getMonitoringLogId())
+                .orElseThrow(() -> new MonitoringLogNotFoundException("Monitoring log not found"));
+
+        List<Staff> staffList = staffRepository.findAllById(updateDTO.getStaffIds());
+        if (staffList.size() != updateDTO.getStaffIds().size())
+            throw new StaffNotFoundException("One or more staff IDs are invalid");
+        monitoringLog.setStaff(staffList);
+
+        List<Crop> cropList = cropRepository.findAllById(updateDTO.getCropCodes());
+        if (cropList.size() != updateDTO.getCropCodes().size())
+            throw new CropNotFoundException("One or more crop codes are invalid");
+        monitoringLog.setCrops(cropList);
     }
 
     @Override
     public MonitoringLogResponse getSelectedMonitoringLog(String id) {
         MonitoringLog monitoringLog = monitoringLogRepository.findById(id)
                 .orElseThrow(() -> new MonitoringLogNotFoundException("Monitoring log not found"));
-        return mapping.convertToDTO(monitoringLog, MonitoringLogDTO.class);
+        return mapping.convertToDTO(monitoringLog, MonitoringLogResponseDTO.class);
     }
 
     @Override
-    public List<MonitoringLogDTO> getAllMonitoringLogs() {
+    public List<MonitoringLogResponseDTO> getAllMonitoringLogs() {
         List<MonitoringLog> monitoringLogs = monitoringLogRepository.findAll();
         if (monitoringLogs.isEmpty()) throw new MonitoringLogNotFoundException("No monitoring logs found");
-        return mapping.convertToDTOList(monitoringLogs, MonitoringLogDTO.class);
+        return mapping.convertToDTOList(monitoringLogs, MonitoringLogResponseDTO.class);
+    }
+
+    @Override
+    public List<CropResponseDTO> getCropsByMonitoringLogId(String monitoringLogId) {
+        List<Crop> crops = monitoringLogRepository.findCropsByMonitoringLogId(monitoringLogId);
+        if (crops.isEmpty()) throw new MonitoringLogNotFoundException("No crops found for the given monitoring log ID");
+        return mapping.convertToDTOList(crops, CropResponseDTO.class);
+    }
+
+    @Override
+    public List<StaffDTO> getStaffByMonitoringLogId(String monitoringLogId) {
+        List<Staff> staff = monitoringLogRepository.findStaffByMonitoringLogId(monitoringLogId);
+        if (staff.isEmpty()) throw new MonitoringLogNotFoundException("No staff found for the given monitoring log ID");
+        return mapping.convertToDTOList(staff, StaffDTO.class);
     }
 }

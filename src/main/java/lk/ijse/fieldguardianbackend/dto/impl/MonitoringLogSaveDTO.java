@@ -5,20 +5,19 @@ import lk.ijse.fieldguardianbackend.dto.SuperDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
-import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class MonitoringLogDTO implements SuperDTO, MonitoringLogResponse {
+public class MonitoringLogSaveDTO implements SuperDTO, MonitoringLogResponse {
     private String code;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date date;
     private String details;
     private MultipartFile observedImage;
-    private List<String> fieldCodes;
-    private List<String> staffIds;
-    private List<String> cropCodes;
+    private String fieldCode;
 }

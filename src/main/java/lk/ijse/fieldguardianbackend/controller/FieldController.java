@@ -6,10 +6,7 @@ import lk.ijse.fieldguardianbackend.customObj.StaffResponse;
 import lk.ijse.fieldguardianbackend.customObj.impl.CropErrorResponse;
 import lk.ijse.fieldguardianbackend.customObj.impl.FieldErrorResponse;
 import lk.ijse.fieldguardianbackend.customObj.impl.StaffErrorResponse;
-import lk.ijse.fieldguardianbackend.dto.impl.CropDTO;
-import lk.ijse.fieldguardianbackend.dto.impl.FieldResponseDTO;
-import lk.ijse.fieldguardianbackend.dto.impl.FieldSaveDTO;
-import lk.ijse.fieldguardianbackend.dto.impl.StaffDTO;
+import lk.ijse.fieldguardianbackend.dto.impl.*;
 import lk.ijse.fieldguardianbackend.exception.*;
 import lk.ijse.fieldguardianbackend.service.FieldService;
 import lombok.RequiredArgsConstructor;
@@ -67,7 +64,7 @@ public class FieldController {
     }
 
     @GetMapping(value = "/{id}/crops", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<CropDTO>> getFieldCrops(@PathVariable("id") String fieldId) {
+    public ResponseEntity<List<CropResponseDTO>> getFieldCrops(@PathVariable("id") String fieldId) {
         return ResponseEntity.status(HttpStatus.OK).body(fieldService.getFieldCrops(fieldId));
     }
 

@@ -2,12 +2,16 @@ package lk.ijse.fieldguardianbackend.controller;
 
 import lk.ijse.fieldguardianbackend.customObj.EquipmentResponse;
 import lk.ijse.fieldguardianbackend.customObj.FieldResponse;
+import lk.ijse.fieldguardianbackend.customObj.StaffResponse;
 import lk.ijse.fieldguardianbackend.customObj.impl.EquipmentErrorResponse;
 import lk.ijse.fieldguardianbackend.customObj.impl.FieldErrorResponse;
+import lk.ijse.fieldguardianbackend.customObj.impl.StaffErrorResponse;
 import lk.ijse.fieldguardianbackend.dto.impl.EquipmentDTO;
+import lk.ijse.fieldguardianbackend.dto.impl.UpdateEquipmentStaffDTO;
 import lk.ijse.fieldguardianbackend.exception.DataPersistFailedException;
 import lk.ijse.fieldguardianbackend.exception.EquipmentNotFoundException;
 import lk.ijse.fieldguardianbackend.exception.FieldNotFoundException;
+import lk.ijse.fieldguardianbackend.exception.StaffNotFoundException;
 import lk.ijse.fieldguardianbackend.service.EquipmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,6 +43,12 @@ public class EquipmentController {
     @PatchMapping(value = "/field/{fieldCode}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateFieldEquipments(@PathVariable("fieldCode") String fieldCode, @RequestBody List<String> equipmentIds) {
         equipmentService.updateFieldEquipments(fieldCode, equipmentIds);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PatchMapping("/update-staff")
+    public ResponseEntity<Void> updateEquipmentStaff(@RequestBody UpdateEquipmentStaffDTO updateEquipmentStaffDTO) {
+        equipmentService.updateEquipmentStaff(updateEquipmentStaffDTO);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -84,6 +94,12 @@ public class EquipmentController {
     public ResponseEntity<FieldResponse> handleFieldNotFoundException(FieldNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new FieldErrorResponse(0, e.getMessage()));
+    }
+
+    @ExceptionHandler(StaffNotFoundException.class)
+    public ResponseEntity<StaffResponse> handleStaffNotFoundException(StaffNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new StaffErrorResponse(0, e.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)

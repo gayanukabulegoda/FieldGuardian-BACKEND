@@ -1,11 +1,13 @@
 package lk.ijse.fieldguardianbackend.controller;
 
+import lk.ijse.fieldguardianbackend.customObj.CropResponse;
 import lk.ijse.fieldguardianbackend.customObj.MonitoringLogResponse;
+import lk.ijse.fieldguardianbackend.customObj.StaffResponse;
+import lk.ijse.fieldguardianbackend.customObj.impl.CropErrorResponse;
 import lk.ijse.fieldguardianbackend.customObj.impl.MonitoringLogErrorResponse;
-import lk.ijse.fieldguardianbackend.dto.impl.MonitoringLogDTO;
-import lk.ijse.fieldguardianbackend.exception.DataPersistFailedException;
-import lk.ijse.fieldguardianbackend.exception.FileConversionException;
-import lk.ijse.fieldguardianbackend.exception.MonitoringLogNotFoundException;
+import lk.ijse.fieldguardianbackend.customObj.impl.StaffErrorResponse;
+import lk.ijse.fieldguardianbackend.dto.impl.*;
+import lk.ijse.fieldguardianbackend.exception.*;
 import lk.ijse.fieldguardianbackend.service.MonitoringLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,20 +25,20 @@ public class MonitoringLogController {
     private final MonitoringLogService monitoringLogService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> saveMonitoringLog(@ModelAttribute MonitoringLogDTO monitoringLogDTO) {
-        monitoringLogService.saveMonitoringLog(monitoringLogDTO);
+    public ResponseEntity<Void> saveMonitoringLog(@ModelAttribute MonitoringLogSaveDTO monitoringLogSaveDTO) {
+        monitoringLogService.saveMonitoringLog(monitoringLogSaveDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> updateMonitoringLog(@PathVariable("id") String id, @ModelAttribute MonitoringLogDTO monitoringLogDTO) {
-        monitoringLogService.updateMonitoringLog(id, monitoringLogDTO);
+    public ResponseEntity<Void> updateMonitoringLog(@PathVariable("id") String id, @ModelAttribute MonitoringLogSaveDTO monitoringLogSaveDTO) {
+        monitoringLogService.updateMonitoringLog(id, monitoringLogSaveDTO);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteMonitoringLog(@PathVariable("id") String id) {
-        monitoringLogService.deleteMonitoringLog(id);
+    @PatchMapping(value = "/update-staff-and-crops", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> updateMonitoringLogStaffAndCrops(@RequestBody UpdateMonitoringLogStaffAndCropsDTO updateDTO) {
+        monitoringLogService.updateMonitoringLogStaffAndCrops(updateDTO);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -46,8 +48,18 @@ public class MonitoringLogController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MonitoringLogDTO>> getAllMonitoringLogs() {
+    public ResponseEntity<List<MonitoringLogResponseDTO>> getAllMonitoringLogs() {
         return ResponseEntity.status(HttpStatus.OK).body(monitoringLogService.getAllMonitoringLogs());
+    }
+
+    @GetMapping("/{id}/crops")
+    public ResponseEntity<List<CropResponseDTO>> getCropsByMonitoringLogId(@PathVariable String id) {
+        return ResponseEntity.status(HttpStatus.OK).body(monitoringLogService.getCropsByMonitoringLogId(id));
+    }
+
+    @GetMapping("/{id}/staff")
+    public ResponseEntity<List<StaffDTO>> getStaffByMonitoringLogId(@PathVariable String id) {
+        return ResponseEntity.status(HttpStatus.OK).body(monitoringLogService.getStaffByMonitoringLogId(id));
     }
 
     @ExceptionHandler(FileConversionException.class)
@@ -66,6 +78,18 @@ public class MonitoringLogController {
     public ResponseEntity<MonitoringLogResponse> handleMonitoringLogNotFoundException(MonitoringLogNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new MonitoringLogErrorResponse(0, e.getMessage()));
+    }
+
+    @ExceptionHandler(StaffNotFoundException.class)
+    public ResponseEntity<StaffResponse> handleStaffNotFoundException(StaffNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new StaffErrorResponse(0, e.getMessage()));
+    }
+
+    @ExceptionHandler(CropNotFoundException.class)
+    public ResponseEntity<CropResponse> handleCropNotFoundException(CropNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new CropErrorResponse(0, e.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)
