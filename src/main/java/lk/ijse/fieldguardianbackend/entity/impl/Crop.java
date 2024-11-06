@@ -2,6 +2,7 @@ package lk.ijse.fieldguardianbackend.entity.impl;
 
 import jakarta.persistence.*;
 import lk.ijse.fieldguardianbackend.entity.SuperEntity;
+import lk.ijse.fieldguardianbackend.entity.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,11 +28,12 @@ public class Crop implements SuperEntity {
     private String category;
     @Column(nullable = false, length = 10)
     private String season;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status;
     @ManyToOne
-    @JoinColumn(name = "field_id", nullable = false, referencedColumnName = "code")
+    @JoinColumn(name = "field_id", referencedColumnName = "code")
     private Field field;
     @ManyToMany(mappedBy = "crops")
     private List<MonitoringLog> monitoringLogs = new ArrayList<>();
 }
-
-

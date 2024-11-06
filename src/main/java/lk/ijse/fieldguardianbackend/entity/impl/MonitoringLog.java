@@ -22,15 +22,11 @@ public class MonitoringLog implements SuperEntity {
     private Date date;
     @Column(nullable = false, length = 150)
     private String details;
-    @Column(name = "observed_image", columnDefinition = "LONGTEXT")
+    @Column(name = "observed_image", columnDefinition = "LONGTEXT", nullable = false)
     private String observedImage;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "monitoring_log_field",
-            joinColumns = @JoinColumn(name = "monitoring_log_id", referencedColumnName = "code"),
-            inverseJoinColumns = @JoinColumn(name = "field_id", referencedColumnName = "code")
-    )
-    private List<Field> fields = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "field_id")
+    private Field field;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "monitoring_log_staff",

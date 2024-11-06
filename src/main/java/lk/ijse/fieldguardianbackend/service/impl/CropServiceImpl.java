@@ -1,17 +1,20 @@
 package lk.ijse.fieldguardianbackend.service.impl;
 
 import lk.ijse.fieldguardianbackend.customObj.CropResponse;
-import lk.ijse.fieldguardianbackend.customObj.impl.CropErrorResponse;
-import lk.ijse.fieldguardianbackend.dto.impl.CropDTO;
+import lk.ijse.fieldguardianbackend.dto.impl.CropResponseDTO;
+import lk.ijse.fieldguardianbackend.dto.impl.CropSaveDTO;
 import lk.ijse.fieldguardianbackend.entity.enums.IdPrefix;
+import lk.ijse.fieldguardianbackend.entity.enums.Status;
 import lk.ijse.fieldguardianbackend.entity.impl.Crop;
 import lk.ijse.fieldguardianbackend.exception.CropNotFoundException;
 import lk.ijse.fieldguardianbackend.exception.DataPersistFailedException;
 import lk.ijse.fieldguardianbackend.exception.FieldNotFoundException;
+import lk.ijse.fieldguardianbackend.exception.FileConversionException;
 import lk.ijse.fieldguardianbackend.repository.CropRepository;
 import lk.ijse.fieldguardianbackend.repository.FieldRepository;
 import lk.ijse.fieldguardianbackend.service.CropService;
 import lk.ijse.fieldguardianbackend.util.CustomIdGenerator;
+import lk.ijse.fieldguardianbackend.util.DataConversionUtil;
 import lk.ijse.fieldguardianbackend.util.Mapping;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,47 +32,61 @@ public class CropServiceImpl implements CropService {
     private final CustomIdGenerator customIdGenerator;
 
     @Override
-    public void saveCrop(CropDTO cropDTO) {
-        cropDTO.setCode(customIdGenerator.generateId(IdPrefix.CROP.getPrefix()));
+    public void saveCrop(CropSaveDTO cropSaveDTO) {
+        cropSaveDTO.setCode(customIdGenerator.generateId(IdPrefix.CROP.getPrefix()));
         try {
-            cropRepository.save(mapping.convertToEntity(cropDTO, Crop.class));
+            Crop crop = mapping.convertToEntity(cropSaveDTO, Crop.class);
+            crop.setCropImage(Optional.ofNullable(cropSaveDTO.getCropImage())
+                    .map(DataConversionUtil::toBase64)
+                    .orElse(null));
+            crop.setStatus(Status.ACTIVE);
+            cropRepository.save(crop);
+        } catch (FileConversionException e) {
+            throw new FileConversionException("Cannot convert image to base64", e);
         } catch (Exception e) {
-            throw new DataPersistFailedException("Cannot Save Crop", e);
+            throw new DataPersistFailedException("Cannot Save Crop", 0, e);
         }
     }
 
     @Override
     @Transactional
-    public void updateCrop(String id, CropDTO cropDTO) {
-        Crop crop = cropRepository.findById(id)
+    public void updateCrop(String id, CropSaveDTO cropSaveDTO) {
+        Crop crop = cropRepository.findByIdAndStatus(id, Status.ACTIVE)
                 .orElseThrow(() -> new CropNotFoundException("Crop not found"));
-        crop.setCommonName(cropDTO.getCommonName());
-        crop.setScientificName(cropDTO.getScientificName());
-        crop.setCropImage(cropDTO.getCropImage());
-        crop.setCategory(cropDTO.getCategory());
-        crop.setSeason(cropDTO.getSeason());
-        crop.setField(fieldRepository.findById(cropDTO.getFieldCode())
+        crop.setCommonName(cropSaveDTO.getCommonName());
+        crop.setScientificName(cropSaveDTO.getScientificName());
+        try {
+            crop.setCropImage(Optional.ofNullable(cropSaveDTO.getCropImage())
+                    .map(DataConversionUtil::toBase64)
+                    .orElse(null));
+        } catch (Exception e) {
+            throw new FileConversionException("Cannot convert image to base64", e);
+        }
+        crop.setCategory(cropSaveDTO.getCategory());
+        crop.setSeason(cropSaveDTO.getSeason());
+        crop.setField(fieldRepository.findById(cropSaveDTO.getFieldCode())
                 .orElseThrow(() -> new FieldNotFoundException("Field not found")));
     }
 
     @Override
+    @Transactional
     public void deleteCrop(String id) {
-        if (!cropRepository.existsById(id)) {
-            throw new CropNotFoundException("Crop not found");
-        }
-        cropRepository.deleteById(id);
+        Crop crop = cropRepository.findByIdAndStatus(id, Status.ACTIVE)
+                .orElseThrow(() -> new CropNotFoundException("Crop not found"));
+        crop.setStatus(Status.REMOVED);
     }
 
     @Override
     public CropResponse getSelectedCrop(String id) {
-        Optional<Crop> byId = cropRepository.findById(id);
-        return (byId.isPresent())
-                ? mapping.convertToDTO(byId.get(), CropDTO.class)
-                : new CropErrorResponse(0, "Crop not found");
+        Crop crop = cropRepository.findByIdAndStatus(id, Status.ACTIVE)
+                .orElseThrow(() -> new CropNotFoundException("Crop not found"));
+        return mapping.convertToDTO(crop, CropResponseDTO.class);
     }
 
     @Override
-    public List<CropDTO> getAllCrops() {
-        return mapping.convertToDTOList(cropRepository.findAll(), CropDTO.class);
+    public List<CropResponseDTO> getAllCrops() {
+        List<Crop> crops = cropRepository.findAllByStatus(Status.ACTIVE);
+        if (crops.isEmpty()) throw new CropNotFoundException("No Crops found");
+        return mapping.convertToDTOList(crops, CropResponseDTO.class);
     }
 }

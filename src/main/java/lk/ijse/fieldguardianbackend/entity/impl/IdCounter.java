@@ -20,4 +20,3 @@ public class IdCounter implements SuperEntity {
     @Column(name = "last_count", nullable = false, length = 10)
     private int lastCount;
 }
-

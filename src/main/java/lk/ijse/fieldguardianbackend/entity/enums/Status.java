@@ -1,6 +1,6 @@
 package lk.ijse.fieldguardianbackend.entity.enums;
 
-public enum StaffStatus {
+public enum Status {
     ACTIVE,
     REMOVED
 }

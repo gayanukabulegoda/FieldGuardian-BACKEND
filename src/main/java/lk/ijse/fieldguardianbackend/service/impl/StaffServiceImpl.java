@@ -1,15 +1,20 @@
 package lk.ijse.fieldguardianbackend.service.impl;
 
 import lk.ijse.fieldguardianbackend.customObj.StaffResponse;
-import lk.ijse.fieldguardianbackend.customObj.impl.StaffErrorResponse;
 import lk.ijse.fieldguardianbackend.dto.impl.StaffDTO;
+import lk.ijse.fieldguardianbackend.dto.impl.StaffFieldDTO;
+import lk.ijse.fieldguardianbackend.dto.impl.VehicleDTO;
 import lk.ijse.fieldguardianbackend.entity.enums.Designation;
 import lk.ijse.fieldguardianbackend.entity.enums.Gender;
 import lk.ijse.fieldguardianbackend.entity.enums.IdPrefix;
-import lk.ijse.fieldguardianbackend.entity.enums.StaffStatus;
+import lk.ijse.fieldguardianbackend.entity.enums.Status;
+import lk.ijse.fieldguardianbackend.entity.impl.Field;
 import lk.ijse.fieldguardianbackend.entity.impl.Staff;
+import lk.ijse.fieldguardianbackend.entity.impl.Vehicle;
 import lk.ijse.fieldguardianbackend.exception.DataPersistFailedException;
+import lk.ijse.fieldguardianbackend.exception.FieldNotFoundException;
 import lk.ijse.fieldguardianbackend.exception.StaffNotFoundException;
+import lk.ijse.fieldguardianbackend.exception.VehicleNotFoundException;
 import lk.ijse.fieldguardianbackend.repository.StaffRepository;
 import lk.ijse.fieldguardianbackend.service.StaffService;
 import lk.ijse.fieldguardianbackend.util.CustomIdGenerator;
@@ -19,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,24 +34,32 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public void saveStaff(StaffDTO staffDTO) {
+        if (staffRepository.existsByContactNo(staffDTO.getContactNo()))
+            throw new DataPersistFailedException("Contact number already exists", 1);
+        if (staffRepository.existsByEmail(staffDTO.getEmail()))
+            throw new DataPersistFailedException("Email already exists", 2);
         staffDTO.setId(customIdGenerator.generateId(IdPrefix.STAFF.getPrefix()));
         Staff staff = mapping.convertToEntity(staffDTO, Staff.class);
         staff.setDesignation(Designation.fromString(staffDTO.getDesignation()));
         staff.setRole(staff.getDesignation().getRole());
         staff.setGender(Gender.fromString(staffDTO.getGender()));
-        staff.setStatus(StaffStatus.ACTIVE);
+        staff.setStatus(Status.ACTIVE);
         try {
             staffRepository.save(staff);
         } catch (Exception e) {
-            throw new DataPersistFailedException("Cannot Save Staff", e);
+            throw new DataPersistFailedException("Cannot Save Staff", 0, e);
         }
     }
 
     @Override
     @Transactional
     public void updateStaff(String id, StaffDTO staffDTO) {
-        Staff staff = staffRepository.findById(id)
+        Staff staff = staffRepository.findActiveStaffById(id, Status.ACTIVE)
                 .orElseThrow(() -> new StaffNotFoundException("Staff not found"));
+        if (!staff.getContactNo().equals(staffDTO.getContactNo()) && staffRepository.existsByContactNo(staffDTO.getContactNo()))
+            throw new DataPersistFailedException("Contact number already exists", 1);
+        if (!staff.getEmail().equals(staffDTO.getEmail()) && staffRepository.existsByEmail(staffDTO.getEmail()))
+            throw new DataPersistFailedException("Email already exists", 2);
         staff.setFirstName(staffDTO.getFirstName());
         staff.setLastName(staffDTO.getLastName());
         staff.setDesignation(Designation.fromString(staffDTO.getDesignation()));
@@ -64,21 +76,43 @@ public class StaffServiceImpl implements StaffService {
     @Override
     @Transactional
     public void deleteStaff(String id) {
-        Staff staff = staffRepository.findById(id)
+        Staff staff = staffRepository.findActiveStaffById(id, Status.ACTIVE)
                 .orElseThrow(() -> new StaffNotFoundException("Staff not found"));
-        staff.setStatus(StaffStatus.REMOVED);
+        staff.setStatus(Status.REMOVED);
     }
 
     @Override
     public StaffResponse getSelectedStaff(String id) {
-        Optional<Staff> byId = staffRepository.findById(id);
-        return (byId.isPresent())
-                ? mapping.convertToDTO(byId.get(), StaffDTO.class)
-                : new StaffErrorResponse(0, "Staff not found");
+        Staff staff = staffRepository.findActiveStaffById(id, Status.ACTIVE)
+                .orElseThrow(() -> new StaffNotFoundException("Staff not found"));
+        return mapping.convertToDTO(staff, StaffDTO.class);
     }
 
     @Override
     public List<StaffDTO> getAllStaffs() {
-        return mapping.convertToDTOList(staffRepository.findAll(), StaffDTO.class);
+        List<Staff> activeStaff = staffRepository.findAllActiveStaff(Status.ACTIVE);
+        if (activeStaff.isEmpty()) throw new StaffNotFoundException("No staff found");
+        return mapping.convertToDTOList(activeStaff, StaffDTO.class);
+    }
+
+    @Override
+    public List<VehicleDTO> getStaffVehicles(String staffId) {
+        List<Vehicle> vehicles = staffRepository.findVehiclesByStaffId(staffId);
+        if (vehicles.isEmpty()) throw new VehicleNotFoundException("No vehicles found for staff");
+        return mapping.convertToDTOList(vehicles, VehicleDTO.class);
+    }
+
+    @Override
+    public List<StaffFieldDTO> getStaffFields(String staffId) {
+        List<Field> fields = staffRepository.findFieldsByStaffId(staffId);
+        if (fields.isEmpty()) throw new FieldNotFoundException("No fields found for staff");
+        return mapping.convertToDTOList(fields, StaffFieldDTO.class);
+    }
+
+    @Override
+    public List<StaffDTO> getStaffWithoutEquipment() {
+        List<Staff> staffList = staffRepository.findAllActiveStaffWithoutEquipment(Status.ACTIVE);
+        if (staffList.isEmpty()) throw new StaffNotFoundException("No staff found without equipment");
+        return mapping.convertToDTOList(staffList, StaffDTO.class);
     }
 }

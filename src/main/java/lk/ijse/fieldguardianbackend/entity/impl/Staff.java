@@ -1,10 +1,12 @@
 package lk.ijse.fieldguardianbackend.entity.impl;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lk.ijse.fieldguardianbackend.entity.SuperEntity;
 import lk.ijse.fieldguardianbackend.entity.enums.Designation;
 import lk.ijse.fieldguardianbackend.entity.enums.Gender;
-import lk.ijse.fieldguardianbackend.entity.enums.StaffStatus;
+import lk.ijse.fieldguardianbackend.entity.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -39,7 +41,7 @@ public class Staff implements SuperEntity {
     private String address;
     @Column(name = "postal_code", nullable = false, length = 10)
     private String postalCode;
-    @Column(name = "contact_no", nullable = false, length = 10)
+    @Column(name = "contact_no", nullable = false, unique = true, length = 10)
     private String contactNo;
     @Column(nullable = false, unique = true, length = 50)
     private String email;
@@ -47,11 +49,14 @@ public class Staff implements SuperEntity {
     private String role;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private StaffStatus status;
-    @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Status status;
+    @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonBackReference
     private List<Vehicle> vehicles = new ArrayList<>();
     @ManyToMany(mappedBy = "staff")
+    @JsonIgnore
     private List<Field> fields = new ArrayList<>();
     @ManyToMany(mappedBy = "staff")
+    @JsonIgnore
     private List<MonitoringLog> monitoringLogs = new ArrayList<>();
 }

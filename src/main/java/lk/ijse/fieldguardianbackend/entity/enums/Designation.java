@@ -22,7 +22,10 @@ public enum Designation {
     private final String role;
 
     public static Designation fromString(String designation) {
-        for (Designation d : Designation.values()) if (d.name().equalsIgnoreCase(designation)) return d;
+        String formattedDesignation = designation.replace(" ", "_").toUpperCase();
+        for (Designation d : Designation.values()) {
+            if (d.name().equals(formattedDesignation)) return d;
+        }
         throw new IllegalDesignationException("Invalid designation: " + designation);
     }
 }
