@@ -5,7 +5,6 @@ import lk.ijse.fieldguardianbackend.entity.SuperEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,12 +19,12 @@ public class MonitoringLog implements SuperEntity {
     private String code;
     @Column(nullable = false)
     private Date date;
-    @Column(nullable = false, length = 150)
+    @Column(nullable = false, columnDefinition = "LONGTEXT", length = 400)
     private String details;
-    @Column(name = "observed_image", columnDefinition = "LONGTEXT", nullable = false)
+    @Column(name = "observed_image", nullable = false, columnDefinition = "LONGTEXT")
     private String observedImage;
     @ManyToOne
-    @JoinColumn(name = "field_id")
+    @JoinColumn(name = "field_id", nullable = false)
     private Field field;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

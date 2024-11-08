@@ -4,7 +4,6 @@ import lk.ijse.fieldguardianbackend.customObj.EquipmentResponse;
 import lk.ijse.fieldguardianbackend.dto.impl.EquipmentDTO;
 import lk.ijse.fieldguardianbackend.dto.impl.UpdateEquipmentStaffDTO;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service

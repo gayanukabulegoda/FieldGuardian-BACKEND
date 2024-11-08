@@ -22,9 +22,12 @@ import lk.ijse.fieldguardianbackend.util.Mapping;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
-
+/**
+ * This class was created for the business logic of Equipment
+ * service implementation
+ * @author - Gayanuka Bulegoda
+ */
 @Service
 @RequiredArgsConstructor
 public class EquipmentServiceImpl implements EquipmentService {
@@ -53,6 +56,7 @@ public class EquipmentServiceImpl implements EquipmentService {
                 .orElseThrow(() -> new EquipmentNotFoundException("Equipment not found"));
         equipment.setName(equipmentDTO.getName());
         equipment.setType(equipmentDTO.getType());
+        equipment.setStatus(EquipmentStatus.valueOf(equipmentDTO.getStatus()));
     }
 
     @Override

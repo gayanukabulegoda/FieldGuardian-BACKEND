@@ -6,9 +6,10 @@ import lk.ijse.fieldguardianbackend.entity.impl.Staff;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
-
+/**
+ * This is the repository layer which is responsible for managing the monitoring log data in the database
+ */
 @Repository
 public interface MonitoringLogRepository extends JpaRepository<MonitoringLog, String> {
     @Query("SELECT m.crops FROM MonitoringLog m WHERE m.code = :monitoringLogId")

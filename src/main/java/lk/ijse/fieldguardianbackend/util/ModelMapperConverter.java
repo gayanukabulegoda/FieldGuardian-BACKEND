@@ -5,11 +5,16 @@ import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
 import org.springframework.data.geo.Point;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.Base64;
-
+/**
+ * Utility class for custom ModelMapper converters.
+ */
 public class ModelMapperConverter {
-
+    /**
+     * Converter for converting MultipartFile to Base64 encoded string.
+     *
+     * @return the converter
+     */
     public static Converter<MultipartFile, String> multipartFileToBase64Converter() {
         return new Converter<MultipartFile, String>() {
             @Override
@@ -25,7 +30,11 @@ public class ModelMapperConverter {
             }
         };
     }
-
+    /**
+     * Converter for converting string to Point object.
+     *
+     * @return the converter
+     */
     public static Converter<String, Point> stringToPointConverter() {
         return new Converter<String, Point>() {
             @Override
