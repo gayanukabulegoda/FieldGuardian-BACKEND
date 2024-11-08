@@ -2,5 +2,4 @@ package lk.ijse.fieldguardianbackend.customObj;
 
 import java.io.Serializable;
 
-public interface CropResponse extends Serializable {
-}
+public interface CropResponse extends Serializable {}

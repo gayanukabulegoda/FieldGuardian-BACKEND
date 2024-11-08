@@ -17,10 +17,13 @@ import lk.ijse.fieldguardianbackend.util.Mapping;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.stream.Collectors;
-
+/**
+ * This class was created for the business logic of Field
+ * service implementation
+ * @author - Gayanuka Bulegoda
+ */
 @Service
 @RequiredArgsConstructor
 public class FieldServiceImpl implements FieldService {

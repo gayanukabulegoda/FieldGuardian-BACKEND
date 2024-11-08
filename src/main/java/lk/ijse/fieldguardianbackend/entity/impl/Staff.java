@@ -10,7 +10,6 @@ import lk.ijse.fieldguardianbackend.entity.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,7 +36,7 @@ public class Staff implements SuperEntity {
     private Date joinedDate;
     @Column(name = "date_of_birth", nullable = false)
     private Date dateOfBirth;
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 150)
     private String address;
     @Column(name = "postal_code", nullable = false, length = 10)
     private String postalCode;

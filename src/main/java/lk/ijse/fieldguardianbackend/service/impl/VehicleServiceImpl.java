@@ -17,9 +17,12 @@ import lk.ijse.fieldguardianbackend.util.Mapping;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
-
+/**
+ * This class was created for the business logic of Vehicle
+ * service implementation
+ * @author - Gayanuka Bulegoda
+ */
 @Service
 @RequiredArgsConstructor
 public class VehicleServiceImpl implements VehicleService {
@@ -51,10 +54,9 @@ public class VehicleServiceImpl implements VehicleService {
         vehicle.setCategory(vehicleDTO.getCategory());
         vehicle.setFuelType(vehicleDTO.getFuelType());
         vehicle.setRemark(vehicleDTO.getRemark());
-        if (VehicleStatus.OUT_OF_SERVICE.name().equals(vehicleDTO.getStatus())) {
-            vehicle.setStatus(VehicleStatus.OUT_OF_SERVICE);
+        vehicle.setStatus(VehicleStatus.valueOf(vehicleDTO.getStatus()));
+        if (vehicle.getStatus() == VehicleStatus.OUT_OF_SERVICE || vehicle.getStatus() == VehicleStatus.AVAILABLE)
             vehicle.setDriver(null);
-        }
     }
 
     @Override

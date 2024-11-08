@@ -7,10 +7,11 @@ import lk.ijse.fieldguardianbackend.entity.impl.Vehicle;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * This is the repository layer which is responsible for managing the staff data in the database
+ */
 @Repository
 public interface StaffRepository extends JpaRepository<Staff, String> {
     @Query("SELECT s FROM Staff s WHERE s.id = :id AND s.status = :status")

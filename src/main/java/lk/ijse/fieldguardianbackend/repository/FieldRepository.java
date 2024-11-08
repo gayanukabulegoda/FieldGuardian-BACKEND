@@ -6,10 +6,11 @@ import lk.ijse.fieldguardianbackend.entity.impl.Field;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * This is the repository layer which is responsible for managing the field data in the database
+ */
 @Repository
 public interface FieldRepository extends JpaRepository<Field, String> {
     @Query("SELECT f FROM Field f WHERE f.code = :id AND f.status <> :status")

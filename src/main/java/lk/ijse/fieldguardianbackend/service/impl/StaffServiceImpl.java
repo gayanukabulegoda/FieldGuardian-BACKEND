@@ -22,9 +22,12 @@ import lk.ijse.fieldguardianbackend.util.Mapping;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
-
+/**
+ * This class was created for the business logic of Staff
+ * service implementation
+ * @author - Gayanuka Bulegoda
+ */
 @Service
 @RequiredArgsConstructor
 public class StaffServiceImpl implements StaffService {

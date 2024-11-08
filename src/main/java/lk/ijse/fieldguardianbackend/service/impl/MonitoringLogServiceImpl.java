@@ -18,9 +18,12 @@ import lk.ijse.fieldguardianbackend.util.Mapping;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
-
+/**
+ * This class was created for the business logic of MonitoringLog
+ * service implementation
+ * @author - Gayanuka Bulegoda
+ */
 @Service
 @RequiredArgsConstructor
 public class MonitoringLogServiceImpl implements MonitoringLogService {
@@ -62,20 +65,25 @@ public class MonitoringLogServiceImpl implements MonitoringLogService {
     }
 
     @Override
-    @Transactional
     public void updateMonitoringLogStaffAndCrops(UpdateMonitoringLogStaffAndCropsDTO updateDTO) {
         MonitoringLog monitoringLog = monitoringLogRepository.findById(updateDTO.getMonitoringLogId())
                 .orElseThrow(() -> new MonitoringLogNotFoundException("Monitoring log not found"));
-
-        List<Staff> staffList = staffRepository.findAllById(updateDTO.getStaffIds());
-        if (staffList.size() != updateDTO.getStaffIds().size())
-            throw new StaffNotFoundException("One or more staff IDs are invalid");
-        monitoringLog.setStaff(staffList);
-
-        List<Crop> cropList = cropRepository.findAllById(updateDTO.getCropCodes());
-        if (cropList.size() != updateDTO.getCropCodes().size())
-            throw new CropNotFoundException("One or more crop codes are invalid");
-        monitoringLog.setCrops(cropList);
+        try {
+            List<Staff> staffList = staffRepository.findAllById(updateDTO.getStaffIds());
+            if (staffList.size() != updateDTO.getStaffIds().size())
+                throw new StaffNotFoundException("One or more staff IDs are invalid");
+            List<Crop> cropList = cropRepository.findAllById(updateDTO.getCropCodes());
+            if (cropList.size() != updateDTO.getCropCodes().size())
+                throw new CropNotFoundException("One or more crop codes are invalid");
+            monitoringLog.setStaff(staffList);
+            monitoringLog.setCrops(cropList);
+            monitoringLogRepository.save(monitoringLog);
+        } catch (CropNotFoundException | StaffNotFoundException e) {
+            if (monitoringLog.getStaff().isEmpty() && monitoringLog.getCrops().isEmpty())
+                monitoringLogRepository.deleteById(monitoringLog.getCode());
+            if (e instanceof CropNotFoundException) throw new CropNotFoundException(e.getMessage());
+            else throw new StaffNotFoundException(e.getMessage());
+        }
     }
 
     @Override
