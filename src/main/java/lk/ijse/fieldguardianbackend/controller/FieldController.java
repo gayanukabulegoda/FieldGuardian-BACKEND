@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 /**
@@ -27,6 +28,7 @@ public class FieldController {
      * @param fieldSaveDTO the field to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)}.
      */
+    @PreAuthorize("hasAnyRole('MANAGER', 'SCIENTIST')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> saveField(@Valid @ModelAttribute FieldSaveDTO fieldSaveDTO) {
         log.info("Request to save field: {}", fieldSaveDTO);
@@ -41,6 +43,7 @@ public class FieldController {
      * @param fieldSaveDTO the field to update.
      * @return the {@link ResponseEntity} with status {@code 204 (No Content)}.
      */
+    @PreAuthorize("hasAnyRole('MANAGER', 'SCIENTIST')")
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> updateField(@PathVariable("id") String id, @Valid @ModelAttribute FieldSaveDTO fieldSaveDTO) {
         log.info("Request to update field with id: {}", id);
@@ -55,6 +58,7 @@ public class FieldController {
      * @param staffIds the list of staff ids to update.
      * @return the {@link ResponseEntity} with status {@code 204 (No Content)}.
      */
+    @PreAuthorize("hasAnyRole('MANAGER', 'SCIENTIST')")
     @PatchMapping(value = "/{id}/staff", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateFieldStaff(@PathVariable("id") String id, @RequestBody List<String> staffIds) {
         log.info("Request to update staff for field with id: {}", id);
@@ -68,6 +72,7 @@ public class FieldController {
      * @param id the id of the field to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (No Content)}.
      */
+    @PreAuthorize("hasAnyRole('MANAGER', 'SCIENTIST')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteField(@PathVariable("id") String id) {
         log.info("Request to delete field with id: {}", id);

@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 /**
@@ -28,6 +29,7 @@ public class EquipmentController {
      * @param equipmentDTO the equipment to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)}.
      */
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMINISTRATIVE')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> saveEquipment(@Valid @RequestBody EquipmentDTO equipmentDTO) {
         log.info("Request to save equipment: {}", equipmentDTO);
@@ -42,6 +44,7 @@ public class EquipmentController {
      * @param equipmentDTO the equipment to update.
      * @return the {@link ResponseEntity} with status {@code 204 (No Content)}.
      */
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMINISTRATIVE')")
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateEquipment(@PathVariable("id") String id, @Valid @RequestBody EquipmentDTO equipmentDTO) {
         log.info("Request to update equipment with id: {}", id);
@@ -56,6 +59,7 @@ public class EquipmentController {
      * @param equipmentIds the list of equipment ids to update.
      * @return the {@link ResponseEntity} with status {@code 204 (No Content)}.
      */
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMINISTRATIVE')")
     @PatchMapping(value = "/field/{fieldCode}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateFieldEquipments(@PathVariable("fieldCode") String fieldCode, @RequestBody List<String> equipmentIds) {
         log.info("Request to update field equipments for fieldCode: {}", fieldCode);
@@ -69,6 +73,7 @@ public class EquipmentController {
      * @param updateEquipmentStaffDTO the DTO containing equipment id and staff id.
      * @return the {@link ResponseEntity} with status {@code 204 (No Content)}.
      */
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMINISTRATIVE')")
     @PatchMapping(value = "/update-staff", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateEquipmentStaff(@Valid @RequestBody UpdateEquipmentStaffDTO updateEquipmentStaffDTO) {
         log.info("Request to update equipment staff: {}", updateEquipmentStaffDTO);
@@ -82,6 +87,7 @@ public class EquipmentController {
      * @param id the id of the equipment to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (No Content)}.
      */
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMINISTRATIVE')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteEquipment(@PathVariable("id") String id) {
         log.info("Request to delete equipment with id: {}", id);

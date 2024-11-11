@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class UserDTO implements SuperDTO, UserResponse {
+public class UserResponseDTO implements SuperDTO, UserResponse {
     private String email;
-    private String password;
     private String role;
 }

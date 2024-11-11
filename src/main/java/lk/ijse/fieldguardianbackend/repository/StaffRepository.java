@@ -27,4 +27,6 @@ public interface StaffRepository extends JpaRepository<Staff, String> {
     @Query("SELECT s FROM Staff s WHERE s.status = :status AND s.id " +
             "NOT IN (SELECT e.assignedStaff.id FROM Equipment e WHERE e.assignedStaff IS NOT NULL)")
     List<Staff> findAllActiveStaffWithoutEquipment(Status status);
+    @Query("SELECT s FROM Staff s WHERE s.email = :email AND s.status <> :status")
+    Optional<Staff> findByEmailAndStatusNot(String email, Status status);
 }

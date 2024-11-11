@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 /**
@@ -29,6 +30,7 @@ public class StaffController {
      * @param staffDTO the staffDTO to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)}.
      */
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMINISTRATIVE')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> saveStaff(@Valid @RequestBody StaffDTO staffDTO) {
         log.info("Request to save staff: {}", staffDTO);
@@ -43,6 +45,7 @@ public class StaffController {
      * @param staffDTO the staffDTO to update.
      * @return the {@link ResponseEntity} with status {@code 204 (No Content)}.
      */
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMINISTRATIVE')")
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateStaff(@PathVariable("id") String id, @Valid @RequestBody StaffDTO staffDTO) {
         log.info("Request to update staff with id: {}", id);
@@ -56,6 +59,7 @@ public class StaffController {
      * @param id the id of the staff to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (No Content)}.
      */
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMINISTRATIVE')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteStaff(@PathVariable("id") String id) {
         log.info("Request to delete staff with id: {}", id);
