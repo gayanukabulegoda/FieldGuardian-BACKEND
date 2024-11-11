@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class UserErrorResponseImpl implements UserResponse {
+public class UserErrorResponse implements UserResponse {
     private int errorCode;
     private String errorMessage;
 }

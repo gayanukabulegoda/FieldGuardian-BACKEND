@@ -5,6 +5,8 @@ import lk.ijse.fieldguardianbackend.customObj.impl.*;
 import lk.ijse.fieldguardianbackend.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -129,6 +131,54 @@ public class GlobalExceptionHandler {
     public ResponseEntity<MonitoringLogResponse> handleMonitoringLogNotFoundException(MonitoringLogNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new MonitoringLogErrorResponse(0, e.getMessage()));
+    }
+    /**
+     * This method is used to handle the exceptions that are thrown when the user is not found.
+     * This method is annotated with @ExceptionHandler to indicate that this method is used to handle exceptions to the type UserNotFoundException.
+     * This method returns a ResponseEntity object with a UserResponse object and the status code.
+     * @param e UserNotFoundException object
+     * @return ResponseEntity object with a UserResponse object and the status code
+     */
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<UserResponse> handleUserNotFoundException(UserNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new UserErrorResponse(0, e.getMessage()));
+    }
+    /**
+     * This method is used to handle the exceptions that are thrown when the username is not found.
+     * This method is annotated with @ExceptionHandler to indicate that this method is used to handle exceptions to the type UsernameNotFoundException.
+     * This method returns a ResponseEntity object with a UserResponse object and the status code.
+     * @param e UsernameNotFoundException object
+     * @return ResponseEntity object with a UserResponse object and the status code
+     */
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<UserResponse> handleUsernameNotFoundException(UsernameNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new UserErrorResponse(0, e.getMessage()));
+    }
+    /**
+     * This method is used to handle the exceptions that are thrown when the JWT authentication fails.
+     * This method is annotated with @ExceptionHandler to indicate that this method is used to handle exceptions to the type JwtAuthenticationException.
+     * This method returns a ResponseEntity object with a UserResponse object and the status code.
+     * @param e JwtAuthenticationException object
+     * @return ResponseEntity object with a UserResponse object and the status code
+     */
+    @ExceptionHandler(JwtAuthenticationException.class)
+    public ResponseEntity<UserResponse> handleJwtAuthenticationException(JwtAuthenticationException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new UserErrorResponse(0, e.getMessage()));
+    }
+    /**
+     * This method is used to handle the exceptions that are thrown when the bad credentials are provided.
+     * This method is annotated with @ExceptionHandler to indicate that this method is used to handle exceptions to the type BadCredentialsException.
+     * This method returns a ResponseEntity object with a UserResponse object and the status code.
+     * @param e BadCredentialsException object
+     * @return ResponseEntity object with a UserResponse object and the status code
+     */
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<UserResponse> handleBadCredentialsException(BadCredentialsException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new UserErrorResponse(0, e.getMessage()));
     }
     /**
      * This method is used to handle general exceptions that are not specifically handled by other methods.

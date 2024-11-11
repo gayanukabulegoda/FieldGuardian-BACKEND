@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 /**
@@ -27,6 +28,7 @@ public class MonitoringLogController {
      * @param monitoringLogSaveDTO the monitoring log to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)}.
      */
+    @PreAuthorize("hasAnyRole('MANAGER', 'SCIENTIST')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> saveMonitoringLog(@Valid @ModelAttribute MonitoringLogSaveDTO monitoringLogSaveDTO) {
         log.info("Request to save monitoring log: {}", monitoringLogSaveDTO);
@@ -41,6 +43,7 @@ public class MonitoringLogController {
      * @param monitoringLogSaveDTO the monitoring log to update.
      * @return the {@link ResponseEntity} with status {@code 204 (No Content)}.
      */
+    @PreAuthorize("hasAnyRole('MANAGER', 'SCIENTIST')")
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> updateMonitoringLog(@PathVariable("id") String id, @Valid @ModelAttribute MonitoringLogSaveDTO monitoringLogSaveDTO) {
         log.info("Request to update monitoring log with id: {}", id);
@@ -54,6 +57,7 @@ public class MonitoringLogController {
      * @param updateDTO the DTO containing staff and crop updates.
      * @return the {@link ResponseEntity} with status {@code 204 (No Content)}.
      */
+    @PreAuthorize("hasAnyRole('MANAGER', 'SCIENTIST')")
     @PatchMapping(value = "/update-staff-and-crops", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateMonitoringLogStaffAndCrops(@Valid @RequestBody UpdateMonitoringLogStaffAndCropsDTO updateDTO) {
         log.info("Request to update staff and crops for monitoring log: {}", updateDTO);

@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 /**
@@ -28,6 +29,7 @@ public class CropController {
      * @param cropSaveDTO the crop to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)}.
      */
+    @PreAuthorize("hasAnyRole('MANAGER', 'SCIENTIST')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> saveCrop(@Valid @ModelAttribute CropSaveDTO cropSaveDTO) {
         log.info("Entering saveCrop with CropSaveDTO: {}", cropSaveDTO);
@@ -42,6 +44,7 @@ public class CropController {
      * @param cropSaveDTO the crop to update.
      * @return the {@link ResponseEntity} with status {@code 204 (No Content)}.
      */
+    @PreAuthorize("hasAnyRole('MANAGER', 'SCIENTIST')")
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> updateCrop(@PathVariable("id") String id, @Valid @ModelAttribute CropSaveDTO cropSaveDTO) {
         log.info("Entering updateCrop with id: {} and CropSaveDTO: {}", id, cropSaveDTO);
@@ -55,6 +58,7 @@ public class CropController {
      * @param id the id of the crop to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (No Content)}.
      */
+    @PreAuthorize("hasAnyRole('MANAGER', 'SCIENTIST')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteCrop(@PathVariable("id") String id) {
         log.info("Entering deleteCrop with id: {}", id);

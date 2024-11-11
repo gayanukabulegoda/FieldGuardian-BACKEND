@@ -16,6 +16,7 @@ import lk.ijse.fieldguardianbackend.exception.FieldNotFoundException;
 import lk.ijse.fieldguardianbackend.exception.StaffNotFoundException;
 import lk.ijse.fieldguardianbackend.exception.VehicleNotFoundException;
 import lk.ijse.fieldguardianbackend.repository.StaffRepository;
+import lk.ijse.fieldguardianbackend.repository.UserRepository;
 import lk.ijse.fieldguardianbackend.service.StaffService;
 import lk.ijse.fieldguardianbackend.util.CustomIdGenerator;
 import lk.ijse.fieldguardianbackend.util.Mapping;
@@ -32,6 +33,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StaffServiceImpl implements StaffService {
     private final StaffRepository staffRepository;
+    private final UserRepository userRepository;
+    private final UserServiceImpl userServiceImpl;
     private final Mapping mapping;
     private final CustomIdGenerator customIdGenerator;
 
@@ -81,6 +84,8 @@ public class StaffServiceImpl implements StaffService {
     public void deleteStaff(String id) {
         Staff staff = staffRepository.findActiveStaffById(id, Status.ACTIVE)
                 .orElseThrow(() -> new StaffNotFoundException("Staff not found"));
+        if (userRepository.existsByEmail(staff.getEmail()))
+            userServiceImpl.deleteUser(staff.getEmail());
         staff.setStatus(Status.REMOVED);
     }
 
