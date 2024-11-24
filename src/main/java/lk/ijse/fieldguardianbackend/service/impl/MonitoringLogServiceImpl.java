@@ -36,7 +36,7 @@ public class MonitoringLogServiceImpl implements MonitoringLogService {
 
     @Override
     public void saveMonitoringLog(MonitoringLogSaveDTO monitoringLogSaveDTO) {
-        monitoringLogSaveDTO.setCode(customIdGenerator.generateId(IdPrefix.MONITORING_LOG.getPrefix()));;
+        monitoringLogSaveDTO.setCode(customIdGenerator.generateId(IdPrefix.MONITORING_LOG.getPrefix()));
         try {
             MonitoringLog monitoringLog = mapping.convertToEntity(monitoringLogSaveDTO, MonitoringLog.class);
             monitoringLog.setObservedImage(DataConversionUtil.toBase64(monitoringLogSaveDTO.getObservedImage()));

@@ -5,7 +5,6 @@ import lk.ijse.fieldguardianbackend.customObj.MonitoringLogResponse;
 import lk.ijse.fieldguardianbackend.dto.impl.*;
 import lk.ijse.fieldguardianbackend.service.MonitoringLogService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,6 @@ import java.util.List;
 /**
  * REST controller for managing Monitoring Logs.
  */
-@Slf4j
 @RestController
 @RequestMapping("/api/v1/monitoring-log")
 @RequiredArgsConstructor
@@ -31,9 +29,7 @@ public class MonitoringLogController {
     @PreAuthorize("hasAnyRole('MANAGER', 'SCIENTIST')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> saveMonitoringLog(@Valid @ModelAttribute MonitoringLogSaveDTO monitoringLogSaveDTO) {
-        log.info("Request to save monitoring log: {}", monitoringLogSaveDTO);
         monitoringLogService.saveMonitoringLog(monitoringLogSaveDTO);
-        log.info("Monitoring log saved successfully");
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
     /**
@@ -46,9 +42,7 @@ public class MonitoringLogController {
     @PreAuthorize("hasAnyRole('MANAGER', 'SCIENTIST')")
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> updateMonitoringLog(@PathVariable("id") String id, @Valid @ModelAttribute MonitoringLogSaveDTO monitoringLogSaveDTO) {
-        log.info("Request to update monitoring log with id: {}", id);
         monitoringLogService.updateMonitoringLog(id, monitoringLogSaveDTO);
-        log.info("Monitoring log with id: {} updated successfully", id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
     /**
@@ -60,9 +54,7 @@ public class MonitoringLogController {
     @PreAuthorize("hasAnyRole('MANAGER', 'SCIENTIST')")
     @PatchMapping(value = "/update-staff-and-crops", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateMonitoringLogStaffAndCrops(@Valid @RequestBody UpdateMonitoringLogStaffAndCropsDTO updateDTO) {
-        log.info("Request to update staff and crops for monitoring log: {}", updateDTO);
         monitoringLogService.updateMonitoringLogStaffAndCrops(updateDTO);
-        log.info("Staff and crops for monitoring log updated successfully");
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
     /**
@@ -73,10 +65,7 @@ public class MonitoringLogController {
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MonitoringLogResponse> getMonitoringLog(@PathVariable("id") String id) {
-        log.info("Request to get monitoring log with id: {}", id);
-        MonitoringLogResponse response = monitoringLogService.getSelectedMonitoringLog(id);
-        log.info("Monitoring log with id: {} retrieved successfully", id);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(monitoringLogService.getSelectedMonitoringLog(id));
     }
     /**
      * {@code GET /} : Get all monitoring logs.
@@ -85,10 +74,7 @@ public class MonitoringLogController {
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<MonitoringLogResponseDTO>> getAllMonitoringLogs() {
-        log.info("Request to get all monitoring logs");
-        List<MonitoringLogResponseDTO> response = monitoringLogService.getAllMonitoringLogs();
-        log.info("All monitoring logs retrieved successfully");
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(monitoringLogService.getAllMonitoringLogs());
     }
     /**
      * {@code GET /{id}/crops} : Get crops by monitoring log id.
@@ -98,10 +84,7 @@ public class MonitoringLogController {
      */
     @GetMapping("/{id}/crops")
     public ResponseEntity<List<CropResponseDTO>> getCropsByMonitoringLogId(@PathVariable String id) {
-        log.info("Request to get crops for monitoring log with id: {}", id);
-        List<CropResponseDTO> response = monitoringLogService.getCropsByMonitoringLogId(id);
-        log.info("Crops for monitoring log with id: {} retrieved successfully", id);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(monitoringLogService.getCropsByMonitoringLogId(id));
     }
     /**
      * {@code GET /{id}/staff} : Get staff by monitoring log id.
@@ -111,9 +94,6 @@ public class MonitoringLogController {
      */
     @GetMapping("/{id}/staff")
     public ResponseEntity<List<StaffDTO>> getStaffByMonitoringLogId(@PathVariable String id) {
-        log.info("Request to get staff for monitoring log with id: {}", id);
-        List<StaffDTO> response = monitoringLogService.getStaffByMonitoringLogId(id);
-        log.info("Staff for monitoring log with id: {} retrieved successfully", id);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(monitoringLogService.getStaffByMonitoringLogId(id));
     }
 }

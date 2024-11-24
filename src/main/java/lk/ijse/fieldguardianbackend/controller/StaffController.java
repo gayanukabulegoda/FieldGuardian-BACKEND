@@ -7,7 +7,6 @@ import lk.ijse.fieldguardianbackend.dto.impl.StaffFieldDTO;
 import lk.ijse.fieldguardianbackend.dto.impl.VehicleDTO;
 import lk.ijse.fieldguardianbackend.service.StaffService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,6 @@ import java.util.List;
 /**
  * REST controller for managing staff-related operations.
  */
-@Slf4j
 @RestController
 @RequestMapping("/api/v1/staff")
 @RequiredArgsConstructor
@@ -33,9 +31,7 @@ public class StaffController {
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMINISTRATIVE')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> saveStaff(@Valid @RequestBody StaffDTO staffDTO) {
-        log.info("Request to save staff: {}", staffDTO);
         staffService.saveStaff(staffDTO);
-        log.info("Staff saved successfully");
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
     /**
@@ -48,9 +44,7 @@ public class StaffController {
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMINISTRATIVE')")
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateStaff(@PathVariable("id") String id, @Valid @RequestBody StaffDTO staffDTO) {
-        log.info("Request to update staff with id: {}", id);
         staffService.updateStaff(id, staffDTO);
-        log.info("Staff with id: {} updated successfully", id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
     /**
@@ -62,9 +56,7 @@ public class StaffController {
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMINISTRATIVE')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteStaff(@PathVariable("id") String id) {
-        log.info("Request to delete staff with id: {}", id);
         staffService.deleteStaff(id);
-        log.info("Staff with id: {} deleted successfully", id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
     /**
@@ -75,10 +67,7 @@ public class StaffController {
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StaffResponse> getStaff(@PathVariable("id") String id) {
-        log.info("Request to get staff with id: {}", id);
-        StaffResponse staffResponse = staffService.getSelectedStaff(id);
-        log.info("Staff with id: {} retrieved successfully", id);
-        return ResponseEntity.status(HttpStatus.OK).body(staffResponse);
+        return ResponseEntity.status(HttpStatus.OK).body(staffService.getSelectedStaff(id));
     }
     /**
      * {@code GET /} : Get all staff.
@@ -87,10 +76,7 @@ public class StaffController {
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<StaffDTO>> getAllStaff() {
-        log.info("Request to get all staff");
-        List<StaffDTO> staffList = staffService.getAllStaffs();
-        log.info("All staff retrieved successfully");
-        return ResponseEntity.status(HttpStatus.OK).body(staffList);
+        return ResponseEntity.status(HttpStatus.OK).body(staffService.getAllStaffs());
     }
     /**
      * {@code GET /{id}/vehicles} : Get the vehicles of the "id" staff.
@@ -100,10 +86,7 @@ public class StaffController {
      */
     @GetMapping(value = "/{id}/vehicles", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<VehicleDTO>> getStaffVehicles(@PathVariable("id") String id) {
-        log.info("Request to get vehicles for staff with id: {}", id);
-        List<VehicleDTO> vehicleList = staffService.getStaffVehicles(id);
-        log.info("Vehicles for staff with id: {} retrieved successfully", id);
-        return ResponseEntity.status(HttpStatus.OK).body(vehicleList);
+        return ResponseEntity.status(HttpStatus.OK).body(staffService.getStaffVehicles(id));
     }
     /**
      * {@code GET /{id}/vehicles} : Get the vehicles of the "id" staff.
@@ -113,10 +96,7 @@ public class StaffController {
      */
     @GetMapping(value = "/{id}/fields", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<StaffFieldDTO>> getStaffFields(@PathVariable("id") String id) {
-        log.info("Request to get fields for staff with id: {}", id);
-        List<StaffFieldDTO> fieldList = staffService.getStaffFields(id);
-        log.info("Fields for staff with id: {} retrieved successfully", id);
-        return ResponseEntity.status(HttpStatus.OK).body(fieldList);
+        return ResponseEntity.status(HttpStatus.OK).body(staffService.getStaffFields(id));
     }
     /**
      * {@code GET /without-equipment} : Get all staff without equipment.
@@ -125,9 +105,6 @@ public class StaffController {
      */
     @GetMapping(value = "/without-equipment", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<StaffDTO>> getStaffWithoutEquipment() {
-        log.info("Request to get staff without equipment");
-        List<StaffDTO> staffList = staffService.getStaffWithoutEquipment();
-        log.info("Staff without equipment retrieved successfully");
-        return ResponseEntity.status(HttpStatus.OK).body(staffList);
+        return ResponseEntity.status(HttpStatus.OK).body(staffService.getStaffWithoutEquipment());
     }
 }
