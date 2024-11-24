@@ -66,6 +66,8 @@ public class Mapping {
             return modelMapper.map(entityList, new TypeToken<List<CropResponseDTO>>() {}.getType());
         if (dtoClass == MonitoringLogResponseDTO.class)
             return modelMapper.map(entityList, new TypeToken<List<MonitoringLogResponseDTO>>() {}.getType());
+        if (dtoClass == UserResponseDTO.class)
+            return modelMapper.map(entityList, new TypeToken<List<UserResponseDTO>>() {}.getType());
         return modelMapper.map(entityList, new TypeToken<List<T>>() {}.getType());
     }
 }

@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class UserResponseDTO implements SuperDTO, UserResponse {
     private String email;
     private String role;
+    private String name;
 }
