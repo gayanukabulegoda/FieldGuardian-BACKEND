@@ -24,7 +24,7 @@ public class Vehicle {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private VehicleStatus status;
-    @Column(nullable = false, length = 150)
+    @Column(nullable = false, length = 300)
     private String remark;
     @ManyToOne
     @JoinColumn(name = "driver_id", referencedColumnName = "id")

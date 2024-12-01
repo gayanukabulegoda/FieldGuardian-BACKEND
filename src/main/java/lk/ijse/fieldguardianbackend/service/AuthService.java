@@ -9,4 +9,5 @@ public interface AuthService {
     JwtAuthResponse signIn(UserRequestDTO signIn);
     JwtAuthResponse signUp(UserRequestDTO signUp);
     JwtAuthResponse refreshToken(String accessToken);
+    void verifyUserEmail(String option, String email);
 }

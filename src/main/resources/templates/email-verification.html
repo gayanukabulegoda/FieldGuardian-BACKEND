@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Email Verification</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f2f3f1;
+            background-image: linear-gradient(135deg, #e7f0d6 25%, transparent 25%), linear-gradient(225deg, #e7f0d6 25%, transparent 25%), linear-gradient(45deg, #e7f0d6 25%, transparent 25%), linear-gradient(315deg, #e7f0d6 25%, #f2f3f1 25%);
+            background-position: 10px 0, 10px 0, 0 0, 0 0;
+            background-size: 20px 20px;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .email-wrapper {
+            max-width: 600px;
+            width: 90%;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            color: #3d3e3e;
+            border: 1px solid #e7f0d6;
+        }
+        .header {
+            background: linear-gradient(90deg, #2e7d32, #4caf50);
+            padding: 15px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+            color: #ffffff;
+        }
+        .email-body {
+            padding: 20px;
+        }
+        .otp-code {
+            display: inline-block;
+            font-size: 28px;
+            font-weight: bold;
+            color: #2e7d32;
+            margin: 20px 0;
+            letter-spacing: 3px;
+            padding: 15px;
+            border: 2px dashed #2e7d32;
+            border-radius: 10px;
+            background-color: #d0f2d9;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .otp-code:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        .footer {
+            margin-top: 30px;
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #676767;
+            background-color: #ddf1d7;
+            border-radius: 0 0 10px 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="outer-container">
+<div class="email-wrapper">
+    <div class="header">
+        <h1>Verify Your Email</h1>
+    </div>
+    <div class="email-body">
+        <h2>Hello, <span th:text="${name}">User</span>!</h2>
+        <p>Thank you for registering with FieldGuardian. To complete your registration, please use the following OTP (One-Time Password) to verify your email address:</p>
+        <div class="otp-code" th:text="${otp}">123456</div>
+        <p>This OTP is valid for a limited time and will expire after 3 minutes. It is required to activate your account. If you didn’t request this email, please ignore it.</p>
+        <p>If you have any questions or need further assistance, feel free to contact our support team.</p>
+    </div>
+    <div class="footer">
+        <p>Thank you for joining us!</p>
+        <p>Best Regards, <br> The FieldGuardian Team</p>
+    </div>
+</div>
+</div>
+</body>
+</html>
