@@ -64,7 +64,7 @@ public class EquipmentServiceImpl implements EquipmentService {
     public void updateFieldEquipments(String fieldCode, List<String> equipmentIds) {
         Field field = fieldRepository.findByIdAndStatusNot(fieldCode, Status.REMOVED)
                 .orElseThrow(() -> new FieldNotFoundException("Field not found"));
-        List<Equipment> equipments = equipmentRepository.findAllByStatusNot(EquipmentStatus.OUT_OF_SERVICE);
+        List<Equipment> equipments = equipmentRepository.findAllById(equipmentIds);
         if (equipments.isEmpty())
             throw new EquipmentNotFoundException("No equipment found for the provided IDs");
         for (Equipment equipment : equipments) {

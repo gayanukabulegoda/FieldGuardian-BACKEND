@@ -10,8 +10,8 @@ import lk.ijse.fieldguardianbackend.entity.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @NoArgsConstructor
@@ -33,14 +33,14 @@ public class Staff implements SuperEntity {
     @Column(nullable = false)
     private Gender gender;
     @Column(name = "joined_date", nullable = false)
-    private Date joinedDate;
+    private LocalDate joinedDate;
     @Column(name = "date_of_birth", nullable = false)
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
     @Column(nullable = false, length = 150)
     private String address;
     @Column(name = "postal_code", nullable = false, length = 10)
     private String postalCode;
-    @Column(name = "contact_no", nullable = false, unique = true, length = 10)
+    @Column(name = "contact_no", nullable = false, unique = true, length = 15)
     private String contactNo;
     @Column(nullable = false, unique = true, length = 50)
     private String email;

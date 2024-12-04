@@ -23,6 +23,7 @@ import lk.ijse.fieldguardianbackend.util.Mapping;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.Arrays;
 import java.util.List;
 /**
  * This class was created for the business logic of Staff
@@ -122,5 +123,10 @@ public class StaffServiceImpl implements StaffService {
         List<Staff> staffList = staffRepository.findAllActiveStaffWithoutEquipment(Status.ACTIVE);
         if (staffList.isEmpty()) throw new StaffNotFoundException("No staff found without equipment");
         return mapping.convertToDTOList(staffList, StaffDTO.class);
+    }
+
+    @Override
+    public List<Designation> getAllStaffDesignations() {
+        return Arrays.asList(Designation.values());
     }
 }

@@ -16,6 +16,7 @@ import lk.ijse.fieldguardianbackend.util.DataConversionUtil;
 import lk.ijse.fieldguardianbackend.util.CustomIdGenerator;
 import lk.ijse.fieldguardianbackend.util.Mapping;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -95,9 +96,15 @@ public class MonitoringLogServiceImpl implements MonitoringLogService {
 
     @Override
     public List<MonitoringLogResponseDTO> getAllMonitoringLogs() {
-        List<MonitoringLog> monitoringLogs = monitoringLogRepository.findAll();
+        List<MonitoringLog> monitoringLogs = monitoringLogRepository.findAll(Sort.by(Sort.Direction.DESC, "code"));
         if (monitoringLogs.isEmpty()) throw new MonitoringLogNotFoundException("No monitoring logs found");
-        return mapping.convertToDTOList(monitoringLogs, MonitoringLogResponseDTO.class);
+        List<MonitoringLogResponseDTO> monitoringLogResponseDTOS =
+                mapping.convertToDTOList(monitoringLogs, MonitoringLogResponseDTO.class);
+        for (MonitoringLogResponseDTO monitoringLogResponseDTO : monitoringLogResponseDTOS) {
+            monitoringLogResponseDTO.setStaffCount(
+                    monitoringLogRepository.getStaffCountByMonitoringLogId(monitoringLogResponseDTO.getCode()));
+        }
+        return monitoringLogResponseDTOS;
     }
 
     @Override

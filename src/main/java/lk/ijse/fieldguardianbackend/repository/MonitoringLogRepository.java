@@ -1,5 +1,6 @@
 package lk.ijse.fieldguardianbackend.repository;
 
+import lk.ijse.fieldguardianbackend.dto.impl.FieldMonitoringCountDTO;
 import lk.ijse.fieldguardianbackend.entity.impl.Crop;
 import lk.ijse.fieldguardianbackend.entity.impl.MonitoringLog;
 import lk.ijse.fieldguardianbackend.entity.impl.Staff;
@@ -16,4 +17,11 @@ public interface MonitoringLogRepository extends JpaRepository<MonitoringLog, St
     List<Crop> findCropsByMonitoringLogId(String monitoringLogId);
     @Query("SELECT m.staff FROM MonitoringLog m WHERE m.code = :monitoringLogId")
     List<Staff> findStaffByMonitoringLogId(String monitoringLogId);
+    @Query("SELECT COUNT(s) FROM MonitoringLog m JOIN m.staff s WHERE m.code = :monitoringLogId")
+    int getStaffCountByMonitoringLogId(String monitoringLogId);
+    @Query("SELECT new lk.ijse.fieldguardianbackend.dto.impl.FieldMonitoringCountDTO(f.name, COUNT(m)) " +
+            "FROM MonitoringLog m JOIN m.field f " +
+            "GROUP BY f.name " +
+            "ORDER BY COUNT(m) DESC")
+    List<FieldMonitoringCountDTO> findTopFiveFieldsWithHighestMonitoringLogs();
 }

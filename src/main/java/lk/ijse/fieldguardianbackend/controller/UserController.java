@@ -19,7 +19,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class UserController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;

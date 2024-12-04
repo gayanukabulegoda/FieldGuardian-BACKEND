@@ -5,8 +5,8 @@ import lk.ijse.fieldguardianbackend.entity.SuperEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @NoArgsConstructor
@@ -18,7 +18,7 @@ public class MonitoringLog implements SuperEntity {
     @Id
     private String code;
     @Column(nullable = false)
-    private Date date;
+    private LocalDate date;
     @Column(nullable = false, columnDefinition = "LONGTEXT", length = 400)
     private String details;
     @Column(name = "observed_image", nullable = false, columnDefinition = "LONGTEXT")

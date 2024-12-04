@@ -1,5 +1,6 @@
 package lk.ijse.fieldguardianbackend.exception.advice;
 
+import jakarta.mail.MessagingException;
 import lk.ijse.fieldguardianbackend.customObj.*;
 import lk.ijse.fieldguardianbackend.customObj.impl.*;
 import lk.ijse.fieldguardianbackend.exception.*;
@@ -21,8 +22,6 @@ import java.util.Map;
 public class GlobalExceptionHandler {
     /**
      * This method is used to handle the exceptions that are thrown when the validation of the request body fails.
-     * This method is annotated with @ExceptionHandler to indicate that this method is used to handle exceptions to the type MethodArgumentNotValidException.
-     * This method returns a ResponseEntity object with a map of error messages and the status code.
      * @param ex MethodArgumentNotValidException object
      * @return ResponseEntity object with a map of error messages and the status code
      */
@@ -38,8 +37,6 @@ public class GlobalExceptionHandler {
     }
     /**
      * This method is used to handle the exceptions that are thrown when the file conversion fails.
-     * This method is annotated with @ExceptionHandler to indicate that this method is used to handle exceptions to the type FileConversionException.
-     * This method returns a ResponseEntity object with a FileResponse object and the status code.
      * @param e FileConversionException object
      * @return ResponseEntity object with a FileResponse object and the status code
      */
@@ -50,8 +47,6 @@ public class GlobalExceptionHandler {
     }
     /**
      * This method is used to handle the exceptions that are thrown when the data persist fails.
-     * This method is annotated with @ExceptionHandler to indicate that this method is used to handle exceptions to the type DataPersistFailedException.
-     * This method returns a ResponseEntity object with a DataPersistResponse object and the status code.
      * @param e DataPersistFailedException object
      * @return ResponseEntity object with a DataPersistResponse object and the status code
      */
@@ -62,8 +57,6 @@ public class GlobalExceptionHandler {
     }
     /**
      * This method is used to handle the exceptions that are thrown when the staff is not found.
-     * This method is annotated with @ExceptionHandler to indicate that this method is used to handle exceptions to the type StaffNotFoundException.
-     * This method returns a ResponseEntity object with a StaffResponse object and the status code.
      * @param e StaffNotFoundException object
      * @return ResponseEntity object with a StaffResponse object and the status code
      */
@@ -74,8 +67,6 @@ public class GlobalExceptionHandler {
     }
     /**
      * This method is used to handle the exceptions that are thrown when the field is not found.
-     * This method is annotated with @ExceptionHandler to indicate that this method is used to handle exceptions to the type FieldNotFoundException.
-     * This method returns a ResponseEntity object with a FieldResponse object and the status code.
      * @param e FieldNotFoundException object
      * @return ResponseEntity object with a FieldResponse object and the status code
      */
@@ -86,8 +77,6 @@ public class GlobalExceptionHandler {
     }
     /**
      * This method is used to handle the exceptions that are thrown when the crop is not found.
-     * This method is annotated with @ExceptionHandler to indicate that this method is used to handle exceptions to the type CropNotFoundException.
-     * This method returns a ResponseEntity object with a CropResponse object and the status code.
      * @param e CropNotFoundException object
      * @return ResponseEntity object with a CropResponse object and the status code
      */
@@ -98,8 +87,6 @@ public class GlobalExceptionHandler {
     }
     /**
      * This method is used to handle the exceptions that are thrown when the equipment is not found.
-     * This method is annotated with @ExceptionHandler to indicate that this method is used to handle exceptions to the type EquipmentNotFoundException.
-     * This method returns a ResponseEntity object with a EquipmentResponse object and the status code.
      * @param e EquipmentNotFoundException object
      * @return ResponseEntity object with a EquipmentResponse object and the status code
      */
@@ -110,8 +97,6 @@ public class GlobalExceptionHandler {
     }
     /**
      * This method is used to handle the exceptions that are thrown when the vehicle is not found.
-     * This method is annotated with @ExceptionHandler to indicate that this method is used to handle exceptions to the type VehicleNotFoundException.
-     * This method returns a ResponseEntity object with a VehicleResponse object and the status code.
      * @param e VehicleNotFoundException object
      * @return ResponseEntity object with a VehicleResponse object and the status code
      */
@@ -122,8 +107,6 @@ public class GlobalExceptionHandler {
     }
     /**
      * This method is used to handle the exceptions that are thrown when the monitoring log is not found.
-     * This method is annotated with @ExceptionHandler to indicate that this method is used to handle exceptions to the type MonitoringLogNotFoundException.
-     * This method returns a ResponseEntity object with a MonitoringLogResponse object and the status code.
      * @param e MonitoringLogNotFoundException object
      * @return ResponseEntity object with a MonitoringLogResponse object and the status code
      */
@@ -134,8 +117,6 @@ public class GlobalExceptionHandler {
     }
     /**
      * This method is used to handle the exceptions that are thrown when the user is not found.
-     * This method is annotated with @ExceptionHandler to indicate that this method is used to handle exceptions to the type UserNotFoundException.
-     * This method returns a ResponseEntity object with a UserResponse object and the status code.
      * @param e UserNotFoundException object
      * @return ResponseEntity object with a UserResponse object and the status code
      */
@@ -146,8 +127,6 @@ public class GlobalExceptionHandler {
     }
     /**
      * This method is used to handle the exceptions that are thrown when the username is not found.
-     * This method is annotated with @ExceptionHandler to indicate that this method is used to handle exceptions to the type UsernameNotFoundException.
-     * This method returns a ResponseEntity object with a UserResponse object and the status code.
      * @param e UsernameNotFoundException object
      * @return ResponseEntity object with a UserResponse object and the status code
      */
@@ -158,8 +137,6 @@ public class GlobalExceptionHandler {
     }
     /**
      * This method is used to handle the exceptions that are thrown when the JWT authentication fails.
-     * This method is annotated with @ExceptionHandler to indicate that this method is used to handle exceptions to the type JwtAuthenticationException.
-     * This method returns a ResponseEntity object with a UserResponse object and the status code.
      * @param e JwtAuthenticationException object
      * @return ResponseEntity object with a UserResponse object and the status code
      */
@@ -170,8 +147,6 @@ public class GlobalExceptionHandler {
     }
     /**
      * This method is used to handle the exceptions that are thrown when the bad credentials are provided.
-     * This method is annotated with @ExceptionHandler to indicate that this method is used to handle exceptions to the type BadCredentialsException.
-     * This method returns a ResponseEntity object with a UserResponse object and the status code.
      * @param e BadCredentialsException object
      * @return ResponseEntity object with a UserResponse object and the status code
      */
@@ -181,9 +156,27 @@ public class GlobalExceptionHandler {
                 .body(new UserErrorResponse(0, e.getMessage()));
     }
     /**
+     * This method is used to handle the exceptions that are thrown when the invalid OTP is provided.
+     * @param e InvalidOtpException object
+     * @return ResponseEntity object with an OtpResponse object and the status code
+     */
+    @ExceptionHandler(InvalidOtpException.class)
+    public ResponseEntity<OtpResponse> handleInvalidOtpException(InvalidOtpException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new OtpErrorResponse(0, e.getMessage()));
+    }
+    /**
+     * This method is used to handle the exceptions that are thrown when the email verification fails.
+     * @param e EmailVerificationException object
+     * @return ResponseEntity object with a UserResponse object and the status code
+     */
+    @ExceptionHandler(EmailVerificationException.class)
+    public ResponseEntity<UserResponse> handleEmailVerificationException(EmailVerificationException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new UserErrorResponse(0, e.getMessage()));
+    }
+    /**
      * This method is used to handle general exceptions that are not specifically handled by other methods.
-     * This method is annotated with @ExceptionHandler to indicate that this method is used to handle exceptions to the type Exception.
-     * This method returns a ResponseEntity object with an InternalServerResponse object and the status code.
      * @param e Exception object
      * @return ResponseEntity object with an InternalServerResponse object and the status code
      */

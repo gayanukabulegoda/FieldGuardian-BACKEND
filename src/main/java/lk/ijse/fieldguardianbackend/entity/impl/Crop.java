@@ -25,7 +25,7 @@ public class Crop implements SuperEntity {
     private String cropImage;
     @Column(nullable = false, length = 20)
     private String category;
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 30)
     private String season;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

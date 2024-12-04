@@ -16,7 +16,7 @@ import java.util.Optional;
 public interface StaffRepository extends JpaRepository<Staff, String> {
     @Query("SELECT s FROM Staff s WHERE s.id = :id AND s.status = :status")
     Optional<Staff> findActiveStaffById(String id, Status status);
-    @Query("SELECT s FROM Staff s WHERE s.status = :status")
+    @Query("SELECT s FROM Staff s WHERE s.status = :status ORDER BY s.id DESC")
     List<Staff> findAllActiveStaff(Status status);
     @Query("SELECT s.vehicles FROM Staff s WHERE s.id = :id")
     List<Vehicle> findVehiclesByStaffId(String id);
@@ -29,4 +29,6 @@ public interface StaffRepository extends JpaRepository<Staff, String> {
     List<Staff> findAllActiveStaffWithoutEquipment(Status status);
     @Query("SELECT s FROM Staff s WHERE s.email = :email AND s.status <> :status")
     Optional<Staff> findByEmailAndStatusNot(String email, Status status);
+    @Query("SELECT COUNT(s) FROM Staff s WHERE s.status <> :status")
+    long countAllActiveStaff(Status status);
 }
