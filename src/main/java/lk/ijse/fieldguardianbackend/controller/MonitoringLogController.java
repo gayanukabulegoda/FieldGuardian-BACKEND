@@ -17,7 +17,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/monitoring-log")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class MonitoringLogController {
     private final MonitoringLogService monitoringLogService;
     /**

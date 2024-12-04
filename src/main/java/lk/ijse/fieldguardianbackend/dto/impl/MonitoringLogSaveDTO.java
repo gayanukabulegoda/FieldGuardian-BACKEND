@@ -10,7 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
-import java.util.Date;
+import java.time.LocalDate;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,7 +19,7 @@ public class MonitoringLogSaveDTO implements SuperDTO, MonitoringLogResponse {
     private String code;
     @NotNull(message = "Date is mandatory")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date date;
+    private LocalDate date;
     @NotBlank(message = "Details is mandatory")
     @Size(min = 3, max = 400, message = "Details must be between 3 and 400 characters")
     private String details;

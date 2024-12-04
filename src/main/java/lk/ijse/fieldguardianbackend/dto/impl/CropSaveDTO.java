@@ -25,8 +25,8 @@ public class CropSaveDTO implements SuperDTO, CropResponse {
     @Size(min = 3, max = 20, message = "Category must be between 3 and 20 characters")
     private String category;
     @NotBlank(message = "Season is mandatory")
-    @Size(min = 3, max = 10, message = "Season must be between 3 and 10 characters")
+    @Size(min = 3, max = 30, message = "Season must be between 3 and 30 characters")
     private String season;
-    @NotBlank(message = "Status is mandatory")
+    @NotBlank(message = "FieldCode is mandatory")
     private String fieldCode;
 }

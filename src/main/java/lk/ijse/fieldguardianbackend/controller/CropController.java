@@ -18,7 +18,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/crop")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class CropController {
     private final CropService cropService;
     /**

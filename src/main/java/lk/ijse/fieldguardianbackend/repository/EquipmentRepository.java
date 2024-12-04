@@ -14,11 +14,13 @@ import java.util.Optional;
 public interface EquipmentRepository extends JpaRepository<Equipment, String> {
     @Query("SELECT e FROM Equipment e WHERE e.id = :id AND e.status <> :status")
     Optional<Equipment> findByIdAndStatusNot(String id, EquipmentStatus status);
-    @Query("SELECT e FROM Equipment e WHERE e.status <> :status")
+    @Query("SELECT e FROM Equipment e WHERE e.status <> :status ORDER BY e.id DESC")
     List<Equipment> findAllByStatusNot(EquipmentStatus status);
     @Query("SELECT e FROM Equipment e WHERE e.status = :status")
     List<Equipment> findAllByStatus(EquipmentStatus status);
     @Query("SELECT e FROM Equipment e WHERE e.assignedField.code = :fieldCode AND" +
             " e.status = lk.ijse.fieldguardianbackend.entity.enums.EquipmentStatus.IN_USE")
     List<Equipment> findByFieldCode(String fieldCode);
+    @Query("SELECT COUNT(e) FROM Equipment e WHERE e.status <> :status")
+    long countAllActiveEquipment(EquipmentStatus status);
 }

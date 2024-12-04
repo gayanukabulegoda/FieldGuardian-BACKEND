@@ -4,6 +4,7 @@ import lk.ijse.fieldguardianbackend.customObj.StaffResponse;
 import lk.ijse.fieldguardianbackend.dto.impl.StaffDTO;
 import lk.ijse.fieldguardianbackend.dto.impl.StaffFieldDTO;
 import lk.ijse.fieldguardianbackend.dto.impl.VehicleDTO;
+import lk.ijse.fieldguardianbackend.entity.enums.Designation;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -17,4 +18,5 @@ public interface StaffService {
     List<VehicleDTO> getStaffVehicles(String staffId);
     List<StaffFieldDTO> getStaffFields(String staffId);
     List<StaffDTO> getStaffWithoutEquipment();
+    List<Designation> getAllStaffDesignations();
 }

@@ -17,7 +17,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/field")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class FieldController {
     private final FieldService fieldService;
     /**

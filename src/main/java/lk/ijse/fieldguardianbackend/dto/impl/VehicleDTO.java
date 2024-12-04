@@ -24,7 +24,7 @@ public class VehicleDTO implements SuperDTO, VehicleResponse {
     private String fuelType;
     private String status;
     @NotBlank(message = "Remark is mandatory")
-    @Size(min = 3, max = 150, message = "Remark must be between 3 and 150 characters")
+    @Size(min = 3, max = 400, message = "Remark must be between 3 and 400 characters")
     private String remark;
     private String driverId;
 }

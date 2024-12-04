@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface FieldRepository extends JpaRepository<Field, String> {
     @Query("SELECT f FROM Field f WHERE f.code = :id AND f.status <> :status")
     Optional<Field> findByIdAndStatusNot(String id, Status status);
-    @Query("SELECT f FROM Field f WHERE f.status <> :status")
+    @Query("SELECT f FROM Field f WHERE f.status <> :status ORDER BY f.code DESC")
     List<Field> findAllByStatusNot(Status status);
     @Query("SELECT f.crops FROM Field f WHERE f.code = :fieldId AND f.status <> :status")
     List<Crop> findCropsByFieldId(String fieldId, Status status);

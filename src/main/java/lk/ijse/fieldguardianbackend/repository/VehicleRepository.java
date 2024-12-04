@@ -16,6 +16,8 @@ public interface VehicleRepository extends JpaRepository<Vehicle, String> {
     boolean findByLicensePlateNumber(String licensePlateNumber);
     @Query("SELECT v FROM Vehicle v WHERE v.code = :id AND v.status <> :status")
     Optional<Vehicle> findByIdAndStatusNot(String id, VehicleStatus status);
-    @Query("SELECT v FROM Vehicle v WHERE v.status <> :status")
+    @Query("SELECT v FROM Vehicle v WHERE v.status <> :status ORDER BY v.code DESC")
     List<Vehicle> findAllByStatusNot(VehicleStatus status);
+    @Query("SELECT COUNT(v) FROM Vehicle v WHERE v.status <> :status")
+    long countAllActiveVehicles(VehicleStatus status);
 }

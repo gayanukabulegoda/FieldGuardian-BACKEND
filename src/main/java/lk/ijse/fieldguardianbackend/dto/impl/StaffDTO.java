@@ -6,8 +6,7 @@ import lk.ijse.fieldguardianbackend.dto.SuperDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
+import java.time.LocalDate;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,9 +24,9 @@ public class StaffDTO implements SuperDTO, StaffResponse {
     @NotBlank(message = "Gender is mandatory")
     private String gender;
     @NotNull(message = "Joined Date is mandatory")
-    private Date joinedDate;
+    private LocalDate joinedDate;
     @NotNull(message = "Date of Birth is mandatory")
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
     @NotBlank(message = "Address is mandatory")
     @Size(min = 3, max = 150, message = "Address must be between 3 and 150 characters")
     private String address;
@@ -35,7 +34,7 @@ public class StaffDTO implements SuperDTO, StaffResponse {
     @Size(min = 5, max = 10, message = "Postal Code must be between 5 and 10 characters")
     private String postalCode;
     @NotBlank(message = "Contact No is mandatory")
-    @Pattern(regexp = "\\d{10}", message = "Contact number must be 10 digits")
+    @Pattern(regexp = "\\+?[\\d\\s-]{10,}", message = "Contact number must be 10 digits")
     private String contactNo;
     @NotBlank(message = "Email is mandatory")
     @Email(message = "Email should be valid")

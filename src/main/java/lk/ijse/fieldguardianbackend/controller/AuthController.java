@@ -19,12 +19,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://127.0.0.1:5500")
 public class AuthController {
     private final AuthService authService;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-
     /**
      * Endpoint for user registration.
      *
@@ -68,5 +66,15 @@ public class AuthController {
             @RequestParam("option") String option, @RequestParam("email") String email)  {
         authService.verifyUserEmail(option, email);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+    /**
+     * Endpoint for refreshing the JWT token.
+     *
+     * @param refreshToken the refresh token
+     * @return ResponseEntity containing the new JWT authentication response
+     */
+    @PostMapping("/refresh")
+    public ResponseEntity<JwtAuthResponse> refreshToken(@RequestParam("refreshToken") String refreshToken) {
+        return ResponseEntity.status(HttpStatus.OK).body(authService.refreshToken(refreshToken));
     }
 }

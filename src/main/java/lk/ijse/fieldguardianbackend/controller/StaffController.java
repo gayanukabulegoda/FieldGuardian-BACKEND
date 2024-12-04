@@ -5,6 +5,7 @@ import lk.ijse.fieldguardianbackend.customObj.StaffResponse;
 import lk.ijse.fieldguardianbackend.dto.impl.StaffDTO;
 import lk.ijse.fieldguardianbackend.dto.impl.StaffFieldDTO;
 import lk.ijse.fieldguardianbackend.dto.impl.VehicleDTO;
+import lk.ijse.fieldguardianbackend.entity.enums.Designation;
 import lk.ijse.fieldguardianbackend.service.StaffService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/staff")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class StaffController {
     private final StaffService staffService;
     /**
@@ -106,5 +106,13 @@ public class StaffController {
     @GetMapping(value = "/without-equipment", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<StaffDTO>> getStaffWithoutEquipment() {
         return ResponseEntity.status(HttpStatus.OK).body(staffService.getStaffWithoutEquipment());
+    }
+    /**
+     * {@code GET /designations} : Get all staff designations.
+     * @return the {@link List} of staff designations.
+     */
+    @GetMapping("/designations")
+    public List<Designation> getAllStaffDesignations() {
+        return staffService.getAllStaffDesignations();
     }
 }

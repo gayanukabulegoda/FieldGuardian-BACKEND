@@ -5,15 +5,16 @@ import lk.ijse.fieldguardianbackend.dto.SuperDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.Date;
+import java.time.LocalDate;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class MonitoringLogResponseDTO implements SuperDTO, MonitoringLogResponse {
     private String code;
-    private Date date;
+    private LocalDate date;
     private String details;
     private String observedImage;
     private String fieldCode;
+    private int staffCount;
 }

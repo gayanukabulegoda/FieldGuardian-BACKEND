@@ -14,6 +14,8 @@ import java.util.Optional;
 public interface CropRepository extends JpaRepository<Crop, String> {
     @Query("SELECT c FROM Crop c WHERE c.code = :id AND c.status = :status")
     Optional<Crop> findByIdAndStatus(String id, Status status);
-    @Query("SELECT c FROM Crop c WHERE c.status = :status")
+    @Query("SELECT c FROM Crop c WHERE c.status = :status ORDER BY c.code DESC")
     List<Crop> findAllByStatus(Status status);
+    @Query("SELECT COUNT(c) FROM Crop c WHERE c.status <> :status")
+    long countAllActiveCrops(Status status);
 }
