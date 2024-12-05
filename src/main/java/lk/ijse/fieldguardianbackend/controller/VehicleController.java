@@ -3,6 +3,7 @@ package lk.ijse.fieldguardianbackend.controller;
 import jakarta.validation.Valid;
 import lk.ijse.fieldguardianbackend.customObj.VehicleResponse;
 import lk.ijse.fieldguardianbackend.dto.impl.VehicleDTO;
+import lk.ijse.fieldguardianbackend.dto.impl.VehicleFilterDTO;
 import lk.ijse.fieldguardianbackend.service.VehicleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,17 @@ public class VehicleController {
     public ResponseEntity<Void> saveVehicle(@Valid @RequestBody VehicleDTO vehicleDTO) {
         vehicleService.saveVehicle(vehicleDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+    /**
+     * {@code POST  /filter} : Filter vehicles.
+     *
+     * @param filterDTO the filter to apply.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of vehicles in body.
+     */
+    @PostMapping("/filter")
+    public ResponseEntity<List<VehicleDTO>> filterVehicles(@RequestBody VehicleFilterDTO filterDTO) {
+        List<VehicleDTO> filteredVehicles = vehicleService.filterVehicle(filterDTO);
+        return ResponseEntity.ok(filteredVehicles);
     }
     /**
      * {@code PATCH  /:id} : Updates an existing vehicle.

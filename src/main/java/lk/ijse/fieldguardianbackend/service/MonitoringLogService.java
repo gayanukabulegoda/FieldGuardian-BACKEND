@@ -14,4 +14,5 @@ public interface MonitoringLogService {
     List<MonitoringLogResponseDTO> getAllMonitoringLogs();
     List<CropResponseDTO> getCropsByMonitoringLogId(String monitoringLogId);
     List<StaffDTO> getStaffByMonitoringLogId(String monitoringLogId);
+    List<MonitoringLogResponseDTO> filterMonitoringLogs(MonitoringLogFilterDTO filterDTO);
 }

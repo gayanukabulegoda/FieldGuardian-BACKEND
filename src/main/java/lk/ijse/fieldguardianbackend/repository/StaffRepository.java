@@ -1,5 +1,7 @@
 package lk.ijse.fieldguardianbackend.repository;
 
+import lk.ijse.fieldguardianbackend.entity.enums.Designation;
+import lk.ijse.fieldguardianbackend.entity.enums.Gender;
 import lk.ijse.fieldguardianbackend.entity.enums.Status;
 import lk.ijse.fieldguardianbackend.entity.impl.Field;
 import lk.ijse.fieldguardianbackend.entity.impl.Staff;
@@ -31,4 +33,9 @@ public interface StaffRepository extends JpaRepository<Staff, String> {
     Optional<Staff> findByEmailAndStatusNot(String email, Status status);
     @Query("SELECT COUNT(s) FROM Staff s WHERE s.status <> :status")
     long countAllActiveStaff(Status status);
+    @Query("SELECT s FROM Staff s WHERE s.status = 'ACTIVE' " +
+            "AND (:name IS NULL OR LOWER(s.firstName) LIKE LOWER(CONCAT('%', :name, '%'))) " +
+            "AND (:designation IS NULL OR s.designation = :designation) " +
+            "AND (:gender IS NULL OR s.gender = :gender)")
+    List<Staff> findAllByFilters(String name, Designation designation, Gender gender);
 }

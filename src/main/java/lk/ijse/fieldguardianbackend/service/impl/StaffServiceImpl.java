@@ -3,6 +3,7 @@ package lk.ijse.fieldguardianbackend.service.impl;
 import lk.ijse.fieldguardianbackend.customObj.StaffResponse;
 import lk.ijse.fieldguardianbackend.dto.impl.StaffDTO;
 import lk.ijse.fieldguardianbackend.dto.impl.StaffFieldDTO;
+import lk.ijse.fieldguardianbackend.dto.impl.StaffFilterDTO;
 import lk.ijse.fieldguardianbackend.dto.impl.VehicleDTO;
 import lk.ijse.fieldguardianbackend.entity.enums.Designation;
 import lk.ijse.fieldguardianbackend.entity.enums.Gender;
@@ -123,6 +124,19 @@ public class StaffServiceImpl implements StaffService {
         List<Staff> staffList = staffRepository.findAllActiveStaffWithoutEquipment(Status.ACTIVE);
         if (staffList.isEmpty()) throw new StaffNotFoundException("No staff found without equipment");
         return mapping.convertToDTOList(staffList, StaffDTO.class);
+    }
+
+    @Override
+    public List<StaffDTO> filterStaff(StaffFilterDTO filterDTO) {
+        Designation enumDesignation = filterDTO.getDesignation() != null
+                ? Designation.valueOf(filterDTO.getDesignation().toUpperCase()) : null;
+        Gender enumGender = filterDTO.getGender() != null ? Gender.valueOf(filterDTO.getGender().toUpperCase()) : null;
+        List<Staff> filteredStaff = staffRepository.findAllByFilters(
+                filterDTO.getName(),
+                enumDesignation,
+                enumGender
+        );
+        return mapping.convertToDTOList(filteredStaff, StaffDTO.class);
     }
 
     @Override

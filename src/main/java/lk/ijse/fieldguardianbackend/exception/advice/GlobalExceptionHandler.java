@@ -1,6 +1,5 @@
 package lk.ijse.fieldguardianbackend.exception.advice;
 
-import jakarta.mail.MessagingException;
 import lk.ijse.fieldguardianbackend.customObj.*;
 import lk.ijse.fieldguardianbackend.customObj.impl.*;
 import lk.ijse.fieldguardianbackend.exception.*;

@@ -20,4 +20,9 @@ public interface VehicleRepository extends JpaRepository<Vehicle, String> {
     List<Vehicle> findAllByStatusNot(VehicleStatus status);
     @Query("SELECT COUNT(v) FROM Vehicle v WHERE v.status <> :status")
     long countAllActiveVehicles(VehicleStatus status);
+    @Query("SELECT v FROM Vehicle v WHERE " +
+            "(:licencePlateNo IS NULL OR LOWER(v.licensePlateNumber) LIKE LOWER(CONCAT('%', :licencePlateNo, '%'))) " +
+            "AND (:category IS NULL OR LOWER(v.category) LIKE LOWER(CONCAT('%', :category, '%'))) " +
+            "AND (:status IS NULL OR v.status = :status)")
+    List<Vehicle> findAllByFilters(String licencePlateNo, String category, VehicleStatus status);
 }
