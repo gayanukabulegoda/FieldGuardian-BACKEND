@@ -2,6 +2,7 @@ package lk.ijse.fieldguardianbackend.service;
 
 import lk.ijse.fieldguardianbackend.customObj.VehicleResponse;
 import lk.ijse.fieldguardianbackend.dto.impl.VehicleDTO;
+import lk.ijse.fieldguardianbackend.dto.impl.VehicleFilterDTO;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -13,4 +14,5 @@ public interface VehicleService {
     void deleteVehicle(String id);
     VehicleResponse getSelectedVehicle(String id);
     List<VehicleDTO> getAllVehicles();
+    List<VehicleDTO> filterVehicle(VehicleFilterDTO filterDTO);
 }

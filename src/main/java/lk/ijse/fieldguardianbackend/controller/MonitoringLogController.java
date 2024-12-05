@@ -32,6 +32,17 @@ public class MonitoringLogController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
     /**
+     * {@code POST /filter} : Filter monitoring logs.
+     *
+     * @param filterDTO the filterDTO to filter monitoring logs.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of filtered monitoring logs in body.
+     */
+    @PostMapping("/filter")
+    public ResponseEntity<List<MonitoringLogResponseDTO>> filterMonitoringLogs(@RequestBody MonitoringLogFilterDTO filterDTO) {
+        List<MonitoringLogResponseDTO> filteredLogs = monitoringLogService.filterMonitoringLogs(filterDTO);
+        return ResponseEntity.ok(filteredLogs);
+    }
+    /**
      * {@code PATCH /{id}} : Updates an existing monitoring log.
      *
      * @param id the id of the monitoring log to update.

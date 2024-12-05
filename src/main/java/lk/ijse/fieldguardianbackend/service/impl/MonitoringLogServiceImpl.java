@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDate;
 import java.util.List;
 /**
  * This class was created for the business logic of MonitoringLog
@@ -119,5 +120,18 @@ public class MonitoringLogServiceImpl implements MonitoringLogService {
         List<Staff> staff = monitoringLogRepository.findStaffByMonitoringLogId(monitoringLogId);
         if (staff.isEmpty()) throw new MonitoringLogNotFoundException("No staff found for the given monitoring log ID");
         return mapping.convertToDTOList(staff, StaffDTO.class);
+    }
+
+    @Override
+    public List<MonitoringLogResponseDTO> filterMonitoringLogs(MonitoringLogFilterDTO filterDTO) {
+        String nameFilter = filterDTO.getName() != null ? filterDTO.getName() : null;
+        LocalDate startOfDay = filterDTO.getDate() != null ? filterDTO.getDate() : null;
+        LocalDate endOfDay = filterDTO.getDate() != null ? filterDTO.getDate() : null;
+        return monitoringLogRepository.findAllByFilters(
+                        nameFilter,
+                        startOfDay,
+                        endOfDay
+                ).stream()
+                .map(monitoringLog -> mapping.convertToDTO(monitoringLog, MonitoringLogResponseDTO.class)).toList();
     }
 }

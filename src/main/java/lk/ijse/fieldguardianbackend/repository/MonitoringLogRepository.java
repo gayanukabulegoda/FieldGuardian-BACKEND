@@ -7,6 +7,7 @@ import lk.ijse.fieldguardianbackend.entity.impl.Staff;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import java.time.LocalDate;
 import java.util.List;
 /**
  * This is the repository layer which is responsible for managing the monitoring log data in the database
@@ -24,4 +25,9 @@ public interface MonitoringLogRepository extends JpaRepository<MonitoringLog, St
             "GROUP BY f.name " +
             "ORDER BY COUNT(m) DESC")
     List<FieldMonitoringCountDTO> findTopFiveFieldsWithHighestMonitoringLogs();
+    @Query("SELECT m FROM MonitoringLog m WHERE " +
+            "(:name IS NULL OR LOWER(m.field.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
+            "AND (:startOfDay IS NULL OR m.date >= :startOfDay) " +
+            "AND (:endOfDay IS NULL OR m.date <= :endOfDay)")
+    List<MonitoringLog> findAllByFilters(String name, LocalDate startOfDay, LocalDate endOfDay);
 }

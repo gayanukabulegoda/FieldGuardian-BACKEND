@@ -2,6 +2,7 @@ package lk.ijse.fieldguardianbackend.service.impl;
 
 import lk.ijse.fieldguardianbackend.customObj.VehicleResponse;
 import lk.ijse.fieldguardianbackend.dto.impl.VehicleDTO;
+import lk.ijse.fieldguardianbackend.dto.impl.VehicleFilterDTO;
 import lk.ijse.fieldguardianbackend.entity.enums.IdPrefix;
 import lk.ijse.fieldguardianbackend.entity.enums.VehicleStatus;
 import lk.ijse.fieldguardianbackend.entity.impl.Staff;
@@ -90,5 +91,18 @@ public class VehicleServiceImpl implements VehicleService {
         List<Vehicle> vehicles = vehicleRepository.findAllByStatusNot(VehicleStatus.REMOVED);
         if (vehicles.isEmpty()) throw new VehicleNotFoundException("No vehicles found");
         return mapping.convertToDTOList(vehicles, VehicleDTO.class);
+    }
+
+    @Override
+    public List<VehicleDTO> filterVehicle(VehicleFilterDTO filterDTO) {
+        VehicleStatus status = (filterDTO.getStatus() != null) ? VehicleStatus.valueOf(filterDTO.getStatus()) : null;
+        return vehicleRepository.findAllByFilters(
+                        filterDTO.getLicensePlateNumber(),
+                        filterDTO.getCategory(),
+                        status
+                )
+                .stream()
+                .filter(vehicle -> !vehicle.getStatus().equals(VehicleStatus.REMOVED))
+                .map(vehicle -> mapping.convertToDTO(vehicle, VehicleDTO.class)).toList();
     }
 }

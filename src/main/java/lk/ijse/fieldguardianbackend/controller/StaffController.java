@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lk.ijse.fieldguardianbackend.customObj.StaffResponse;
 import lk.ijse.fieldguardianbackend.dto.impl.StaffDTO;
 import lk.ijse.fieldguardianbackend.dto.impl.StaffFieldDTO;
+import lk.ijse.fieldguardianbackend.dto.impl.StaffFilterDTO;
 import lk.ijse.fieldguardianbackend.dto.impl.VehicleDTO;
 import lk.ijse.fieldguardianbackend.entity.enums.Designation;
 import lk.ijse.fieldguardianbackend.service.StaffService;
@@ -33,6 +34,17 @@ public class StaffController {
     public ResponseEntity<Void> saveStaff(@Valid @RequestBody StaffDTO staffDTO) {
         staffService.saveStaff(staffDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+    /**
+     * {@code POST /filter} : Filter staff.
+     *
+     * @param filterDTO the filterDTO to filter staff.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of filtered staff in body.
+     */
+    @PostMapping("/filter")
+    public ResponseEntity<List<StaffDTO>> filterStaff(@RequestBody StaffFilterDTO filterDTO) {
+        List<StaffDTO> filteredStaff = staffService.filterStaff(filterDTO);
+        return ResponseEntity.ok(filteredStaff);
     }
     /**
      * {@code PATCH /{id}} : Updates an existing staff.
